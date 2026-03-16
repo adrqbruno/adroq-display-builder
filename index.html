@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>AdRoq Display Builder</title>
+  <meta name="description" content="Build static and animated programmatic display ads in seconds. All IAB formats, HTML5 export, no code needed."/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { font-family: "Inter", sans-serif; background: #f5f2ee; color: #1a1a1a; -webkit-font-smoothing: antialiased; }
+
+    nav { position: sticky; top: 0; z-index: 50; background: rgba(245,242,238,.92); backdrop-filter: blur(12px); border-bottom: 1px solid #e8e4de; padding: 0 40px; height: 60px; display: flex; align-items: center; justify-content: space-between; }
+    .nav-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+    .nav-logo-icon { width: 30px; height: 30px; background: #111; border-radius: 7px; display: flex; align-items: center; justify-content: center; }
+    .nav-logo-icon svg { width: 14px; height: 14px; fill: #fff; }
+    .nav-brand { font-size: 14px; font-weight: 700; color: #1a1a1a; }
+    .nav-brand span { font-weight: 400; color: #999; }
+    .nav-cta { background: #111; color: #fff; padding: 8px 20px; border-radius: 20px; font-size: 13px; font-weight: 600; text-decoration: none; transition: opacity .15s; }
+    .nav-cta:hover { opacity: .8; }
+
+    .hero { padding: 100px 40px 80px; text-align: center; max-width: 800px; margin: 0 auto; }
+    .hero-badge { display: inline-flex; align-items: center; gap: 6px; background: #fff; border: 1px solid #e8e4de; border-radius: 20px; padding: 5px 14px; font-size: 12px; color: #666; margin-bottom: 28px; }
+    .hero-badge-dot { width: 6px; height: 6px; background: #22c55e; border-radius: 50%; }
+    .hero h1 { font-size: clamp(40px, 6vw, 68px); font-weight: 800; line-height: 1.08; letter-spacing: -.03em; color: #111; margin-bottom: 20px; }
+    .hero h1 em { font-style: normal; color: #666; }
+    .hero p { font-size: 18px; color: #666; line-height: 1.6; margin-bottom: 36px; max-width: 520px; margin-left: auto; margin-right: auto; }
+    .hero-actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+    .btn-hero-primary { background: #111; color: #fff; padding: 14px 32px; border-radius: 24px; font-size: 15px; font-weight: 700; text-decoration: none; transition: opacity .15s; }
+    .btn-hero-primary:hover { opacity: .85; }
+    .btn-hero-secondary { background: #fff; color: #333; padding: 14px 28px; border-radius: 24px; font-size: 15px; font-weight: 500; text-decoration: none; border: 1px solid #e0dcd6; transition: background .15s; }
+    .btn-hero-secondary:hover { background: #eee; }
+
+    .preview-strip { padding: 0 40px 80px; overflow: hidden; }
+    .preview-strip-inner { background: #111; border-radius: 20px; padding: 40px; display: flex; gap: 16px; align-items: center; justify-content: center; flex-wrap: wrap; }
+    .format-pill { background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.1); border-radius: 10px; padding: 14px 18px; display: flex; flex-direction: column; align-items: center; gap: 8px; min-width: 100px; }
+    .format-pill-bar { background: rgba(255,255,255,.2); border-radius: 3px; }
+    .format-pill-name { font-size: 10px; color: rgba(255,255,255,.5); text-align: center; font-weight: 500; }
+    .format-pill-size { font-size: 9px; color: rgba(255,255,255,.3); }
+
+    .features { padding: 80px 40px; max-width: 1100px; margin: 0 auto; }
+    .section-label { font-size: 11px; font-weight: 700; color: #999; text-transform: uppercase; letter-spacing: .1em; margin-bottom: 12px; }
+    .section-title { font-size: clamp(28px, 4vw, 42px); font-weight: 800; letter-spacing: -.02em; color: #111; margin-bottom: 48px; line-height: 1.15; }
+    .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
+    .feature-card { background: #fff; border: 1px solid #e8e4de; border-radius: 16px; padding: 28px; }
+    .feature-icon { width: 40px; height: 40px; background: #f0ece6; border-radius: 10px; display: flex; align-items: center; justify-content: center; margin-bottom: 16px; font-size: 18px; }
+    .feature-card h3 { font-size: 15px; font-weight: 700; color: #111; margin-bottom: 8px; }
+    .feature-card p { font-size: 13px; color: #888; line-height: 1.6; }
+
+    .formats-section { padding: 80px 40px; background: #fff; }
+    .formats-inner { max-width: 1100px; margin: 0 auto; }
+    .formats-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; margin-top: 48px; }
+    .format-card { background: #f7f4f0; border: 1px solid #e8e4de; border-radius: 12px; padding: 16px; display: flex; flex-direction: column; gap: 8px; }
+    .format-card-visual { width: 100%; display: flex; align-items: center; justify-content: center; height: 48px; }
+    .format-card-rect { background: #d4cfc9; border-radius: 3px; }
+    .format-card-name { font-size: 12px; font-weight: 600; color: #333; }
+    .format-card-size { font-size: 11px; color: #aaa; }
+    .format-card-badge { font-size: 9px; font-weight: 700; color: #0066ff; background: #e8f0ff; padding: 2px 6px; border-radius: 4px; width: fit-content; }
+
+    .cta-section { padding: 100px 40px; text-align: center; }
+    .cta-box { background: #111; border-radius: 24px; padding: 72px 40px; max-width: 700px; margin: 0 auto; }
+    .cta-box h2 { font-size: clamp(28px, 4vw, 44px); font-weight: 800; color: #fff; letter-spacing: -.02em; margin-bottom: 16px; line-height: 1.15; }
+    .cta-box p { font-size: 16px; color: rgba(255,255,255,.5); margin-bottom: 36px; line-height: 1.6; }
+    .btn-cta-white { background: #fff; color: #111; padding: 14px 36px; border-radius: 24px; font-size: 15px; font-weight: 700; text-decoration: none; transition: opacity .15s; display: inline-block; }
+    .btn-cta-white:hover { opacity: .9; }
+
+    footer { padding: 32px 40px; border-top: 1px solid #e8e4de; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+    .footer-logo { display: flex; align-items: center; gap: 8px; text-decoration: none; }
+    .footer-logo-icon { width: 24px; height: 24px; background: #111; border-radius: 5px; display: flex; align-items: center; justify-content: center; }
+    .footer-logo-icon svg { width: 11px; height: 11px; fill: #fff; }
+    .footer-brand { font-size: 13px; font-weight: 600; color: #555; }
+    .footer-copy { font-size: 12px; color: #bbb; }
+
+    @media (max-width: 600px) {
+      nav { padding: 0 20px; }
+      .hero { padding: 60px 20px 40px; }
+      .preview-strip { padding: 0 20px 40px; }
+      .features { padding: 60px 20px; }
+      .formats-section { padding: 60px 20px; }
+      .cta-section { padding: 60px 20px; }
+      footer { padding: 24px 20px; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a href="/" class="nav-logo">
+      <div class="nav-logo-icon">
+        <svg viewBox="0 0 16 16"><rect x="1" y="1" width="6" height="6" rx="1"/><rect x="9" y="1" width="6" height="6" rx="1"/><rect x="1" y="9" width="6" height="6" rx="1"/><rect x="9" y="9" width="6" height="6" rx="1"/></svg>
+      </div>
+      <span class="nav-brand">AdRoq <span>/ Display Builder</span></span>
+    </a>
+    <a href="/builder" class="nav-cta">Open Builder →</a>
+  </nav>
+
+  <section class="hero">
+    <div class="hero-badge"><span class="hero-badge-dot"></span> Built by AdRoq</div>
+    <h1>Build display ads<br><em>without the friction.</em></h1>
+    <p>Create static and animated programmatic banners across all IAB formats and native sizes. Export PNG or HTML5 in seconds.</p>
+    <div class="hero-actions">
+      <a href="/builder" class="btn-hero-primary">Open Builder →</a>
+      <a href="#formats" class="btn-hero-secondary">See all formats</a>
+    </div>
+  </section>
+
+  <div class="preview-strip">
+    <div class="preview-strip-inner">
+      <div class="format-pill"><div class="format-pill-bar" style="width:60px;height:50px;"></div><div class="format-pill-name">Med. Rectangle</div><div class="format-pill-size">300×250</div></div>
+      <div class="format-pill"><div class="format-pill-bar" style="width:90px;height:11px;"></div><div class="format-pill-name">Leaderboard</div><div class="format-pill-size">728×90</div></div>
+      <div class="format-pill"><div class="format-pill-bar" style="width:40px;height:80px;"></div><div class="format-pill-name">Half Page</div><div class="format-pill-size">300×600</div></div>
+      <div class="format-pill"><div class="format-pill-bar" style="width:60px;height:60px;"></div><div class="format-pill-name">Native Square</div><div class="format-pill-size">1080×1080</div></div>
+      <div class="format-pill"><div class="format-pill-bar" style="width:80px;height:12px;"></div><div class="format-pill-name">Mobile Banner</div><div class="format-pill-size">320×50</div></div>
+      <div class="format-pill"><div class="format-pill-bar" style="width:30px;height:55px;"></div><div class="format-pill-name">Native Story</div><div class="format-pill-size">1080×1920</div></div>
+    </div>
+  </div>
+
+  <section class="features">
+    <div class="section-label">What it does</div>
+    <div class="section-title">Everything you need<br>to build display creatives.</div>
+    <div class="features-grid">
+      <div class="feature-card"><div class="feature-icon">⚡</div><h3>All IAB Formats</h3><p>20 standard IAB sizes pre-loaded — from Medium Rectangle to Billboard. Switch formats instantly.</p></div>
+      <div class="feature-card"><div class="feature-icon">🎬</div><h3>Static + Animated</h3><p>Build static banners or animated HTML5 ads with per-layer animations — fade, slide, zoom, bounce.</p></div>
+      <div class="feature-card"><div class="feature-icon">📦</div><h3>HTML5 Export</h3><p>Export self-contained HTML5 files ready to traffic on DV360, Google Ads, Taboola and more.</p></div>
+      <div class="feature-card"><div class="feature-icon">🖼</div><h3>Layer Control</h3><p>6 independent layers — background, logo, visual element, headline, body copy, CTA. Full X/Y positioning.</p></div>
+      <div class="feature-card"><div class="feature-icon">⬆️</div><h3>Bulk Upload</h3><p>Upload multiple background images at once and assign them to formats. Set up an entire campaign in one go.</p></div>
+      <div class="feature-card"><div class="feature-icon">💾</div><h3>Per-Format Memory</h3><p>Edits are saved per format as you work. Switch between sizes without losing your changes.</p></div>
+    </div>
+  </section>
+
+  <section class="formats-section" id="formats">
+    <div class="formats-inner">
+      <div class="section-label">Format coverage</div>
+      <div class="section-title">20 formats. Every placement covered.</div>
+      <div class="formats-grid">
+        <div class="format-card"><div class="format-card-visual"><div class="format-card-rect" style="width:48px;height:40px"></div></div><div class="format-card-name">Medium Rectangle</div><div class="format-card-size">300×250</div><div class="format-card-badge">IAB · 40%</div></div>
+        <div class="format-card"><div class="format-card-visual"><div class="format-card-rect" style="width:64px;height:8px"></div></div><div class="format-card-name">Leaderboard</div><div class="format-card-size">728×90</div><div class="format-card-badge">IAB · 25%</div></div>
+        <div class="format-card"><div class="format-card-visual"><div class="format-card-rect" style="width:16px;height:48px"></div></div><div class="format-card-name">Wide Skyscraper</div><div class="format-card-size">160×600</div><div class="format-card-badge">IAB · 12%</div></div>
+        <div class="format-card"><div class="format-card-visual"><div class="format-card-rect" style="width:24px;height:48px"></div></div><div class="format-card-name">Half Page</div><div class="format-card-size">300×600</div><div class="format-card-badge">IAB · 5%</div></div>
+        <div class="format-card"><div class="format-card-visual"><div class="format-card-rect" style="width:64px;height:16px"></div></div><div class="format-card-name">Billboard</div><div class="format-card-size">970×250</div><div class="format-card-badge">IAB</div></div>
+        <div class="format-card"><div class="format-card-visual"><div class="format-card-rect" style="width:48px;height:8px"></div></div><div class="format-card-name">Mobile Banner</div><div class="format-card-size">320×50</div><div class="format-card-badge">IAB</div></div>
+        <div class="format-card"><div class="format-card-visual"><div class="format-card-rect" style="width:48px;height:15px"></div></div><div class="format-card-name">Mobile Interstitial</div><div class="format-card-size">320×100</div><div class="format-card-badge">IAB</div></div>
+        <div class="format-card"><div class="format-card-visual"><div class="format-card-rect" style="width:64px;height:6px"></div></div><div class="format-card-name">Large Leaderboard</div><div class="format-card-size">970×90</div><div class="format-card-badge">IAB</div></div>
+        <div class="format-card"><div class="format-card-visual"><div class="format-card-rect" style="width:48px;height:40px"></div></div><div class="format-card-name">Large Rectangle</div><div class="format-card-size">336×280</div><div class="format-card-badge">IAB</div></div>
+        <div class="format-card"><div class="format-card-visual"><div class="format-card-rect" style="width:32px;height:27px"></div></div><div class="format-card-name">Small Rectangle</div><div class="format-card-size">180×150</div><div class="format-card-badge">IAB</div></div>
+        <div class="format-card"><div class="format-card-visual"><div class="format-card-rect" style="width:12px;height:48px"></div></div><div class="format-card-name">Skyscraper</div><div class="format-card-size">120×600</div><div class="format-card-badge">IAB · 12%</div></div>
+        <div class="format-card"><div class="format-card-visual"><div class="format-card-rect" style="width:36px;height:36px"></div></div><div class="format-card-name">Square</div><div class="format-card-size">250×250</div><div class="format-card-badge">IAB</div></div>
+        <div class="format-card"><div class="format-card-visual"><div class="format-card-rect" style="width:30px;height:30px"></div></div><div class="format-card-name">Small Square</div><div class="format-card-size">200×200</div><div class="format-card-badge">IAB</div></div>
+        <div class="format-card"><div class="format-card-visual"><div class="format-card-rect" style="width:12px;height:24px"></div></div><div class="format-card-name">Vertical Banner</div><div class="format-card-size">120×240</div><div class="format-card-badge">IAB</div></div>
+        <div class="format-card"><div class="format-card-visual"><div class="format-card-rect" style="width:48px;height:6px"></div></div><div class="format-card-name">Banner</div><div class="format-card-size">468×60</div><div class="format-card-badge">IAB</div></div>
+        <div class="format-card"><div class="format-card-visual"><div class="format-card-rect" style="width:36px;height:9px"></div></div><div class="format-card-name">Half Banner</div><div class="format-card-size">234×60</div><div class="format-card-badge">IAB</div></div>
+        <div class="format-card"><div class="format-card-visual"><div class="format-card-rect" style="width:18px;height:48px"></div></div><div class="format-card-name">Portrait</div><div class="format-card-size">300×1050</div><div class="format-card-badge">IAB</div></div>
+        <div class="format-card"><div class="format-card-visual"><div class="format-card-rect" style="width:64px;height:33px"></div></div><div class="format-card-name">Native Feed</div><div class="format-card-size">1200×628</div><div class="format-card-badge">Native</div></div>
+        <div class="format-card"><div class="format-card-visual"><div class="format-card-rect" style="width:44px;height:44px"></div></div><div class="format-card-name">Native Square</div><div class="format-card-size">1080×1080</div><div class="format-card-badge">Native</div></div>
+        <div class="format-card"><div class="format-card-visual"><div class="format-card-rect" style="width:25px;height:44px"></div></div><div class="format-card-name">Native Story</div><div class="format-card-size">1080×1920</div><div class="format-card-badge">Native</div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="cta-section">
+    <div class="cta-box">
+      <h2>Start building your next campaign.</h2>
+      <p>No installs. No exports to Figma. Just open the builder and go.</p>
+      <a href="/builder" class="btn-cta-white">Open Builder →</a>
+    </div>
+  </section>
+
+  <footer>
+    <a href="/" class="footer-logo">
+      <div class="footer-logo-icon">
+        <svg viewBox="0 0 16 16"><rect x="1" y="1" width="6" height="6" rx="1"/><rect x="9" y="1" width="6" height="6" rx="1"/><rect x="1" y="9" width="6" height="6" rx="1"/><rect x="9" y="9" width="6" height="6" rx="1"/></svg>
+      </div>
+      <span class="footer-brand">AdRoq Display Builder</span>
+    </a>
+    <span class="footer-copy">© 2026 AdRoq. All rights reserved.</span>
+  </footer>
+
+</body>
+</html>
