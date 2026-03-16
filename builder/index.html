@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AdRoq Display Builder</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; background: #eeeae4; color: #1a1a1a; font-family: "Inter", sans-serif; -webkit-font-smoothing: antialiased; overflow: hidden; }
+
+    #app { display: flex; height: 100vh; }
+    #sidebar-left  { width: 200px; background: #fff; border-right: 1px solid #e2ddd7; overflow-y: auto; padding: 0; flex-shrink: 0; display: flex; flex-direction: column; }
+    #canvas-area   { flex: 1; display: flex; flex-direction: column; align-items: center; overflow-y: auto; padding: 32px 24px; background: #eeeae4; }
+    #sidebar-right { width: 272px; background: #fff; border-left: 1px solid #e2ddd7; overflow-y: auto; padding: 20px 16px; flex-shrink: 0; }
+
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #d0cbc4; border-radius: 3px; }
+
+    #app-header { padding: 16px 14px 12px; border-bottom: 1px solid #e2ddd7; display: flex; align-items: center; gap: 8px; }
+    #app-logo { width: 28px; height: 28px; background: #111; border-radius: 6px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    #app-logo svg { width: 14px; height: 14px; fill: #fff; }
+    #app-title { font-size: 13px; font-weight: 600; color: #1a1a1a; line-height: 1; }
+    #app-subtitle { font-size: 10px; color: #999; margin-top: 2px; }
+
+    .format-group-label { padding: 14px 14px 6px; font-size: 10px; font-weight: 700; color: #999; text-transform: uppercase; letter-spacing: .08em; }
+    .format-item { padding: 7px 14px; cursor: pointer; border-left: 2px solid transparent; font-size: 12px; color: #666; transition: background .1s; }
+    .format-item:hover { background: #f5f2ee; color: #1a1a1a; }
+    .format-item.active { background: #f0ece6; border-left-color: #111; color: #111; }
+    .format-item strong { font-weight: 500; display: block; }
+    .format-item span { display: block; font-size: 10px; color: #aaa; margin-top: 1px; }
+    .format-spacer { height: 8px; }
+
+    #mode-bar { display: flex; align-items: center; gap: 8px; margin-bottom: 20px; background: #fff; border: 1px solid #e2ddd7; border-radius: 24px; padding: 4px; width: fit-content; }
+    .mode-btn { padding: 5px 16px; border-radius: 20px; border: none; background: transparent; color: #888; cursor: pointer; font-size: 12px; font-weight: 500; font-family: inherit; transition: all .15s; }
+    .mode-btn.active { background: #111; color: #fff; font-weight: 600; }
+    #replay-btn { padding: 5px 14px; border-radius: 20px; border: 1px solid #e2ddd7; background: #fff; color: #666; cursor: pointer; font-size: 12px; font-family: inherit; display: none; margin-left: 4px; }
+    #replay-btn:hover { background: #f5f2ee; }
+
+    #canvas-info { font-size: 11px; color: #aaa; margin-bottom: 16px; letter-spacing: .02em; }
+    #banner-wrapper { flex-shrink: 0; }
+
+    #export-bar { display: flex; gap: 8px; margin-top: 24px; flex-wrap: wrap; justify-content: center; }
+    .btn-primary { padding: 9px 20px; border-radius: 20px; border: none; background: #111; color: #fff; cursor: pointer; font-weight: 600; font-size: 13px; font-family: inherit; transition: opacity .15s; }
+    .btn-primary:hover { opacity: .85; }
+    .btn-outline  { padding: 9px 20px; border-radius: 20px; border: 1px solid #ccc; background: #fff; color: #333; cursor: pointer; font-weight: 500; font-size: 13px; font-family: inherit; transition: background .15s; }
+    .btn-outline:hover { background: #f5f2ee; }
+    .btn-ghost    { padding: 9px 16px; border-radius: 20px; border: 1px solid #e2ddd7; background: transparent; color: #999; cursor: pointer; font-size: 13px; font-family: inherit; }
+    .btn-ghost:hover { background: #f5f2ee; color: #666; }
+    .btn-primary:disabled { opacity: .4; cursor: default; }
+
+    #layer-tabs { font-size: 10px; font-weight: 700; color: #999; margin-bottom: 10px; text-transform: uppercase; letter-spacing: .08em; }
+    #tabs-bar { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 18px; }
+    .tab-btn { padding: 5px 12px; border-radius: 20px; border: 1px solid #e2ddd7; background: #fff; color: #888; cursor: pointer; font-size: 12px; font-weight: 500; font-family: inherit; transition: all .15s; }
+    .tab-btn:hover { background: #f5f2ee; color: #333; }
+    .tab-btn.active { background: #111; color: #fff; border-color: #111; font-weight: 600; }
+
+    .ctrl-section-title { font-size: 10px; font-weight: 700; color: #999; margin-bottom: 10px; text-transform: uppercase; letter-spacing: .08em; }
+    .ctrl-section { margin-bottom: 18px; }
+    .ctrl-label { font-size: 10px; color: #aaa; margin-bottom: 4px; text-transform: uppercase; letter-spacing: .05em; font-weight: 600; }
+    .ctrl-row { display: flex; gap: 8px; margin-bottom: 10px; }
+    .ctrl-col { flex: 1; }
+    .ctrl-input { width: 100%; background: #fff; border: 1px solid #e2ddd7; border-radius: 8px; padding: 7px 10px; color: #1a1a1a; font-size: 13px; font-family: inherit; transition: border-color .15s; }
+    .ctrl-input:focus { outline: none; border-color: #111; }
+    select.ctrl-input { cursor: pointer; }
+    .ctrl-color-wrap { display: flex; align-items: center; gap: 8px; background: #fff; border: 1px solid #e2ddd7; border-radius: 8px; padding: 4px 8px; }
+    .ctrl-color-wrap span { font-size: 12px; color: #888; font-family: monospace; }
+    input[type="color"] { width: 26px; height: 26px; border: none; background: none; cursor: pointer; padding: 0; border-radius: 4px; }
+    input[type="range"] { width: 100%; accent-color: #111; height: 4px; }
+
+    .upload-row { display: flex; gap: 8px; align-items: center; margin-bottom: 12px; }
+    .btn-upload { background: #fff; border: 1px solid #e2ddd7; border-radius: 20px; color: #555; padding: 6px 14px; cursor: pointer; font-size: 12px; font-family: inherit; transition: background .15s; }
+    .btn-upload:hover { background: #f5f2ee; }
+    .upload-ok { font-size: 11px; color: #22a05a; font-weight: 600; }
+
+    /* ── Bulk Upload Modal ── */
+    #bulk-modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,.35); z-index:100; align-items:center; justify-content:center; }
+    #bulk-modal-overlay.open { display:flex; }
+    #bulk-modal { background:#fff; border-radius:16px; padding:28px; width:560px; max-height:80vh; overflow-y:auto; box-shadow:0 8px 40px rgba(0,0,0,.18); }
+    #bulk-modal h2 { font-size:15px; font-weight:700; color:#1a1a1a; margin-bottom:4px; }
+    #bulk-modal p  { font-size:12px; color:#999; margin-bottom:20px; }
+    .bulk-row { display:flex; align-items:center; gap:10px; margin-bottom:10px; padding:10px 12px; background:#f7f4f0; border-radius:10px; }
+    .bulk-thumb { width:48px; height:48px; object-fit:cover; border-radius:6px; flex-shrink:0; border:1px solid #e2ddd7; }
+    .bulk-filename { font-size:12px; color:#555; flex:1; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .bulk-select { background:#fff; border:1px solid #e2ddd7; border-radius:8px; padding:6px 8px; font-size:12px; font-family:inherit; color:#1a1a1a; cursor:pointer; min-width:160px; }
+    #bulk-modal-footer { display:flex; gap:8px; justify-content:flex-end; margin-top:20px; padding-top:16px; border-top:1px solid #f0ece6; }
+
+    @keyframes adsFadeIn    { from{opacity:0} to{opacity:1} }
+    @keyframes adsSlideLeft { from{opacity:0;transform:translateX(30px)} to{opacity:1;transform:translateX(0)} }
+    @keyframes adsSlideUp   { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+    @keyframes adsZoomIn    { from{opacity:0;transform:scale(.8)} to{opacity:1;transform:scale(1)} }
+    @keyframes adsBounce    { 0%{opacity:0;transform:scale(.6)} 60%{transform:scale(1.1)} 100%{opacity:1;transform:scale(1)} }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <aside id="sidebar-left">
+      <div id="app-header">
+        <div id="app-logo">
+          <svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+            <rect x="1" y="1" width="6" height="6" rx="1"/>
+            <rect x="9" y="1" width="6" height="6" rx="1"/>
+            <rect x="1" y="9" width="6" height="6" rx="1"/>
+            <rect x="9" y="9" width="6" height="6" rx="1"/>
+          </svg>
+        </div>
+        <div>
+          <div id="app-title">AdRoq</div>
+          <div id="app-subtitle">Display Builder</div>
+        </div>
+      </div>
+    </aside>
+    <main id="canvas-area">
+      <div id="mode-bar">
+        <button class="mode-btn active" data-mode="static">Static</button>
+        <button class="mode-btn" data-mode="animated">Animated</button>
+        <button id="replay-btn">&#9654; Replay</button>
+      </div>
+      <div id="canvas-info"></div>
+      <div id="banner-wrapper"></div>
+      <div id="export-bar">
+        <button class="btn-primary" id="btn-png">&#8595; Export PNG</button>
+        <button class="btn-outline"  id="btn-html5">&#8595; Export HTML5</button>
+        <button class="btn-outline"  id="btn-bulk-upload">&#8679; Bulk Upload</button>
+        <button class="btn-ghost"    id="btn-reset">Reset</button>
+      </div>
+    </main>
+    <aside id="sidebar-right">
+      <div id="layer-tabs">Layers</div>
+      <div id="tabs-bar"></div>
+      <div id="panel-content"></div>
+    </aside>
+  </div>
+
+  <!-- Bulk Upload Modal -->
+  <div id="bulk-modal-overlay">
+    <div id="bulk-modal">
+      <h2>Bulk Upload</h2>
+      <p>Assign each image to a format. It will be set as the background for that format.</p>
+      <div id="bulk-rows"></div>
+      <div id="bulk-modal-footer">
+        <button class="btn-ghost" id="bulk-cancel">Cancel</button>
+        <button class="btn-primary" id="bulk-apply">Apply</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="../src/main.js"></script>
+</body>
+</html>
