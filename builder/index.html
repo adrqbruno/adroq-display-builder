@@ -10,22 +10,18 @@
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html, body { height: 100%; background: #eeeae4; color: #1a1a1a; font-family: "Inter", sans-serif; -webkit-font-smoothing: antialiased; overflow: hidden; }
-
     #app { display: flex; height: 100vh; }
     #sidebar-left  { width: 200px; background: #fff; border-right: 1px solid #e2ddd7; overflow-y: auto; padding: 0; flex-shrink: 0; display: flex; flex-direction: column; }
     #canvas-area   { flex: 1; display: flex; flex-direction: column; align-items: center; overflow-y: auto; padding: 32px 24px; background: #eeeae4; }
     #sidebar-right { width: 272px; background: #fff; border-left: 1px solid #e2ddd7; overflow-y: auto; padding: 20px 16px; flex-shrink: 0; }
-
     ::-webkit-scrollbar { width: 5px; }
     ::-webkit-scrollbar-track { background: transparent; }
     ::-webkit-scrollbar-thumb { background: #d0cbc4; border-radius: 3px; }
-
     #app-header { padding: 16px 14px 12px; border-bottom: 1px solid #e2ddd7; display: flex; align-items: center; gap: 8px; }
     #app-logo { width: 28px; height: 28px; background: #111; border-radius: 6px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
     #app-logo svg { width: 14px; height: 14px; fill: #fff; }
     #app-title { font-size: 13px; font-weight: 600; color: #1a1a1a; line-height: 1; }
     #app-subtitle { font-size: 10px; color: #999; margin-top: 2px; }
-
     .format-group-label { padding: 14px 14px 6px; font-size: 10px; font-weight: 700; color: #999; text-transform: uppercase; letter-spacing: .08em; }
     .format-item { padding: 7px 14px; cursor: pointer; border-left: 2px solid transparent; font-size: 12px; color: #666; transition: background .1s; }
     .format-item:hover { background: #f5f2ee; color: #1a1a1a; }
@@ -33,61 +29,48 @@
     .format-item strong { font-weight: 500; display: block; }
     .format-item span { display: block; font-size: 10px; color: #aaa; margin-top: 1px; }
     .format-spacer { height: 8px; }
-
     #mode-bar { display: flex; align-items: center; gap: 8px; margin-bottom: 20px; background: #fff; border: 1px solid #e2ddd7; border-radius: 24px; padding: 4px; width: fit-content; }
     .mode-btn { padding: 5px 16px; border-radius: 20px; border: none; background: transparent; color: #888; cursor: pointer; font-size: 12px; font-weight: 500; font-family: inherit; transition: all .15s; }
     .mode-btn.active { background: #111; color: #fff; font-weight: 600; }
     #replay-btn { padding: 5px 14px; border-radius: 20px; border: 1px solid #e2ddd7; background: #fff; color: #666; cursor: pointer; font-size: 12px; font-family: inherit; display: none; margin-left: 4px; }
-    #replay-btn:hover { background: #f5f2ee; }
-
-    #canvas-info { font-size: 11px; color: #aaa; margin-bottom: 16px; letter-spacing: .02em; }
+    #canvas-info { font-size: 11px; color: #aaa; margin-bottom: 16px; }
     #banner-wrapper { flex-shrink: 0; }
-
     #export-bar { display: flex; gap: 8px; margin-top: 24px; flex-wrap: wrap; justify-content: center; }
     .btn-primary { padding: 9px 20px; border-radius: 20px; border: none; background: #111; color: #fff; cursor: pointer; font-weight: 600; font-size: 13px; font-family: inherit; transition: opacity .15s; }
     .btn-primary:hover { opacity: .85; }
-    .btn-outline  { padding: 9px 20px; border-radius: 20px; border: 1px solid #ccc; background: #fff; color: #333; cursor: pointer; font-weight: 500; font-size: 13px; font-family: inherit; transition: background .15s; }
+    .btn-outline { padding: 9px 20px; border-radius: 20px; border: 1px solid #ccc; background: #fff; color: #333; cursor: pointer; font-weight: 500; font-size: 13px; font-family: inherit; }
     .btn-outline:hover { background: #f5f2ee; }
-    .btn-ghost    { padding: 9px 16px; border-radius: 20px; border: 1px solid #e2ddd7; background: transparent; color: #999; cursor: pointer; font-size: 13px; font-family: inherit; }
-    .btn-ghost:hover { background: #f5f2ee; color: #666; }
+    .btn-ghost { padding: 9px 16px; border-radius: 20px; border: 1px solid #e2ddd7; background: transparent; color: #999; cursor: pointer; font-size: 13px; font-family: inherit; }
     .btn-primary:disabled { opacity: .4; cursor: default; }
-
     #layer-tabs { font-size: 10px; font-weight: 700; color: #999; margin-bottom: 10px; text-transform: uppercase; letter-spacing: .08em; }
     #tabs-bar { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 18px; }
-    .tab-btn { padding: 5px 12px; border-radius: 20px; border: 1px solid #e2ddd7; background: #fff; color: #888; cursor: pointer; font-size: 12px; font-weight: 500; font-family: inherit; transition: all .15s; }
-    .tab-btn:hover { background: #f5f2ee; color: #333; }
+    .tab-btn { padding: 5px 12px; border-radius: 20px; border: 1px solid #e2ddd7; background: #fff; color: #888; cursor: pointer; font-size: 12px; font-weight: 500; font-family: inherit; }
     .tab-btn.active { background: #111; color: #fff; border-color: #111; font-weight: 600; }
-
     .ctrl-section-title { font-size: 10px; font-weight: 700; color: #999; margin-bottom: 10px; text-transform: uppercase; letter-spacing: .08em; }
     .ctrl-section { margin-bottom: 18px; }
     .ctrl-label { font-size: 10px; color: #aaa; margin-bottom: 4px; text-transform: uppercase; letter-spacing: .05em; font-weight: 600; }
     .ctrl-row { display: flex; gap: 8px; margin-bottom: 10px; }
     .ctrl-col { flex: 1; }
-    .ctrl-input { width: 100%; background: #fff; border: 1px solid #e2ddd7; border-radius: 8px; padding: 7px 10px; color: #1a1a1a; font-size: 13px; font-family: inherit; transition: border-color .15s; }
+    .ctrl-input { width: 100%; background: #fff; border: 1px solid #e2ddd7; border-radius: 8px; padding: 7px 10px; color: #1a1a1a; font-size: 13px; font-family: inherit; }
     .ctrl-input:focus { outline: none; border-color: #111; }
     select.ctrl-input { cursor: pointer; }
     .ctrl-color-wrap { display: flex; align-items: center; gap: 8px; background: #fff; border: 1px solid #e2ddd7; border-radius: 8px; padding: 4px 8px; }
     .ctrl-color-wrap span { font-size: 12px; color: #888; font-family: monospace; }
-    input[type="color"] { width: 26px; height: 26px; border: none; background: none; cursor: pointer; padding: 0; border-radius: 4px; }
-    input[type="range"] { width: 100%; accent-color: #111; height: 4px; }
-
+    input[type="color"] { width: 26px; height: 26px; border: none; background: none; cursor: pointer; padding: 0; }
+    input[type="range"] { width: 100%; accent-color: #111; }
     .upload-row { display: flex; gap: 8px; align-items: center; margin-bottom: 12px; }
-    .btn-upload { background: #fff; border: 1px solid #e2ddd7; border-radius: 20px; color: #555; padding: 6px 14px; cursor: pointer; font-size: 12px; font-family: inherit; transition: background .15s; }
-    .btn-upload:hover { background: #f5f2ee; }
+    .btn-upload { background: #fff; border: 1px solid #e2ddd7; border-radius: 20px; color: #555; padding: 6px 14px; cursor: pointer; font-size: 12px; font-family: inherit; }
     .upload-ok { font-size: 11px; color: #22a05a; font-weight: 600; }
-
-    /* Bulk Upload Modal */
     #bulk-modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,.35); z-index:100; align-items:center; justify-content:center; }
     #bulk-modal-overlay.open { display:flex; }
     #bulk-modal { background:#fff; border-radius:16px; padding:28px; width:560px; max-height:80vh; overflow-y:auto; box-shadow:0 8px 40px rgba(0,0,0,.18); }
-    #bulk-modal h2 { font-size:15px; font-weight:700; color:#1a1a1a; margin-bottom:4px; }
-    #bulk-modal p  { font-size:12px; color:#999; margin-bottom:20px; }
+    #bulk-modal h2 { font-size:15px; font-weight:700; margin-bottom:4px; }
+    #bulk-modal p { font-size:12px; color:#999; margin-bottom:20px; }
     .bulk-row { display:flex; align-items:center; gap:10px; margin-bottom:10px; padding:10px 12px; background:#f7f4f0; border-radius:10px; }
-    .bulk-thumb { width:48px; height:48px; object-fit:cover; border-radius:6px; flex-shrink:0; border:1px solid #e2ddd7; }
+    .bulk-thumb { width:48px; height:48px; object-fit:cover; border-radius:6px; flex-shrink:0; }
     .bulk-filename { font-size:12px; color:#555; flex:1; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-    .bulk-select { background:#fff; border:1px solid #e2ddd7; border-radius:8px; padding:6px 8px; font-size:12px; font-family:inherit; color:#1a1a1a; cursor:pointer; min-width:160px; }
+    .bulk-select { background:#fff; border:1px solid #e2ddd7; border-radius:8px; padding:6px 8px; font-size:12px; font-family:inherit; cursor:pointer; min-width:160px; }
     #bulk-modal-footer { display:flex; gap:8px; justify-content:flex-end; margin-top:20px; padding-top:16px; border-top:1px solid #f0ece6; }
-
     @keyframes adsFadeIn    { from{opacity:0} to{opacity:1} }
     @keyframes adsSlideLeft { from{opacity:0;transform:translateX(30px)} to{opacity:1;transform:translateX(0)} }
     @keyframes adsSlideUp   { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
@@ -96,58 +79,284 @@
   </style>
 </head>
 <body>
-  <div id="app">
-    <aside id="sidebar-left">
-      <div id="app-header">
-        <div id="app-logo">
-          <svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
-            <rect x="1" y="1" width="6" height="6" rx="1"/>
-            <rect x="9" y="1" width="6" height="6" rx="1"/>
-            <rect x="1" y="9" width="6" height="6" rx="1"/>
-            <rect x="9" y="9" width="6" height="6" rx="1"/>
-          </svg>
-        </div>
-        <div>
-          <div id="app-title">AdRoq</div>
-          <div id="app-subtitle">Display Builder</div>
-        </div>
-      </div>
-    </aside>
-    <main id="canvas-area">
-      <div id="mode-bar">
-        <button class="mode-btn active" data-mode="static">Static</button>
-        <button class="mode-btn" data-mode="animated">Animated</button>
-        <button id="replay-btn">&#9654; Replay</button>
-      </div>
-      <div id="canvas-info"></div>
-      <div id="banner-wrapper"></div>
-      <div id="export-bar">
-        <button class="btn-primary" id="btn-png">&#8595; Export PNG</button>
-        <button class="btn-outline"  id="btn-html5">&#8595; Export HTML5</button>
-        <button class="btn-outline"  id="btn-bulk-upload">&#8679; Bulk Upload</button>
-        <button class="btn-ghost"    id="btn-reset">Reset</button>
-      </div>
-    </main>
-    <aside id="sidebar-right">
-      <div id="layer-tabs">Layers</div>
-      <div id="tabs-bar"></div>
-      <div id="panel-content"></div>
-    </aside>
-  </div>
+<div id="app">
+  <aside id="sidebar-left">
+    <div id="app-header">
+      <div id="app-logo"><svg viewBox="0 0 16 16"><rect x="1" y="1" width="6" height="6" rx="1"/><rect x="9" y="1" width="6" height="6" rx="1"/><rect x="1" y="9" width="6" height="6" rx="1"/><rect x="9" y="9" width="6" height="6" rx="1"/></svg></div>
+      <div><div id="app-title">AdRoq</div><div id="app-subtitle">Display Builder</div></div>
+    </div>
+  </aside>
+  <main id="canvas-area">
+    <div id="mode-bar">
+      <button class="mode-btn active" data-mode="static">Static</button>
+      <button class="mode-btn" data-mode="animated">Animated</button>
+      <button id="replay-btn">&#9654; Replay</button>
+    </div>
+    <div id="canvas-info"></div>
+    <div id="banner-wrapper"></div>
+    <div id="export-bar">
+      <button class="btn-primary" id="btn-png">&#8595; Export PNG</button>
+      <button class="btn-outline" id="btn-html5">&#8595; Export HTML5</button>
+      <button class="btn-outline" id="btn-bulk-upload">&#8679; Bulk Upload</button>
+      <button class="btn-ghost" id="btn-reset">Reset</button>
+    </div>
+  </main>
+  <aside id="sidebar-right">
+    <div id="layer-tabs">Layers</div>
+    <div id="tabs-bar"></div>
+    <div id="panel-content"></div>
+  </aside>
+</div>
 
-  <!-- Bulk Upload Modal -->
-  <div id="bulk-modal-overlay">
-    <div id="bulk-modal">
-      <h2>Bulk Upload</h2>
-      <p>Assign each image to a format. It will be set as the background for that format.</p>
-      <div id="bulk-rows"></div>
-      <div id="bulk-modal-footer">
-        <button class="btn-ghost" id="bulk-cancel">Cancel</button>
-        <button class="btn-primary" id="bulk-apply">Apply</button>
-      </div>
+<div id="bulk-modal-overlay">
+  <div id="bulk-modal">
+    <h2>Bulk Upload</h2>
+    <p>Assign each image to a format. It will be set as the background for that format.</p>
+    <div id="bulk-rows"></div>
+    <div id="bulk-modal-footer">
+      <button class="btn-ghost" id="bulk-cancel">Cancel</button>
+      <button class="btn-primary" id="bulk-apply">Apply</button>
     </div>
   </div>
+</div>
 
-  <script type="module" src="../src/main.js"></script>
+<script>
+// ── Constants ─────────────────────────────────────────────────────────────────
+const FORMATS = [
+  { label:"Medium Rectangle",    w:300,  h:250,  cat:"IAB" },
+  { label:"Leaderboard",         w:728,  h:90,   cat:"IAB" },
+  { label:"Wide Skyscraper",     w:160,  h:600,  cat:"IAB" },
+  { label:"Half Page",           w:300,  h:600,  cat:"IAB" },
+  { label:"Billboard",           w:970,  h:250,  cat:"IAB" },
+  { label:"Mobile Banner",       w:320,  h:50,   cat:"IAB" },
+  { label:"Mobile Interstitial", w:320,  h:100,  cat:"IAB" },
+  { label:"Large Leaderboard",   w:970,  h:90,   cat:"IAB" },
+  { label:"Large Rectangle",     w:336,  h:280,  cat:"IAB" },
+  { label:"Small Rectangle",     w:180,  h:150,  cat:"IAB" },
+  { label:"Skyscraper",          w:120,  h:600,  cat:"IAB" },
+  { label:"Square",              w:250,  h:250,  cat:"IAB" },
+  { label:"Small Square",        w:200,  h:200,  cat:"IAB" },
+  { label:"Vertical Banner",     w:120,  h:240,  cat:"IAB" },
+  { label:"Banner",              w:468,  h:60,   cat:"IAB" },
+  { label:"Half Banner",         w:234,  h:60,   cat:"IAB" },
+  { label:"Portrait",            w:300,  h:1050, cat:"IAB" },
+  { label:"Native Feed",         w:1200, h:628,  cat:"Native" },
+  { label:"Native Square",       w:1080, h:1080, cat:"Native" },
+  { label:"Native Story",        w:1080, h:1920, cat:"Native" },
+];
+const FONTS = ["Inter","Arial","Georgia","Helvetica","Trebuchet MS","Verdana"];
+const ANIMS = ["none","fade-in","slide-left","slide-up","zoom-in","bounce"];
+const ANIM_MAP = {"fade-in":"adsFadeIn","slide-left":"adsSlideLeft","slide-up":"adsSlideUp","zoom-in":"adsZoomIn","bounce":"adsBounce"};
+const SCALE_MAX = 420;
+function getScale(fmt){ return Math.min(1, SCALE_MAX/Math.max(fmt.w,fmt.h)); }
+
+// ── Default Layers ────────────────────────────────────────────────────────────
+function defaultLayers(fmt){
+  const w=fmt?fmt.w:300, h=fmt?fmt.h:250;
+  const isThin=h<=100, isWide=w>=700&&h>=200&&w>h&&w!==1080;
+  const isPortrait=w===300&&h===1050, isSquare=w===1080&&h===1080;
+  const isStory=w===1080&&h===1920, isFeed=w===1200&&h===628;
+  const area=w*h, minDim=Math.min(w,h);
+  let hlSize,bdSize,ctaSize,ctaW,ctaH,hlX,hlY,bdX,bdY,ctaX,ctaY;
+  if(isThin){
+    hlSize=Math.max(11,Math.round(minDim*0.22));bdSize=0;ctaSize=Math.max(10,Math.round(minDim*0.14));
+    ctaW=Math.round(w*0.25);ctaH=Math.round(h*0.60);hlX=50;hlY=50;bdX=50;bdY=50;ctaX=50;ctaY=50;
+  } else if(isSquare){
+    hlSize=126;bdSize=70;ctaSize=76;ctaW=1152;ctaH=126;hlX=50;hlY=26;bdX=50;bdY=54;ctaX=50;ctaY=92;
+  } else if(isStory){
+    hlSize=150;bdSize=100;ctaSize=70;ctaW=1000;ctaH=200;hlX=50;hlY=19;bdX=50;bdY=54;ctaX=50;ctaY=92;
+  } else if(isFeed){
+    hlSize=80;bdSize=46;ctaSize=50;ctaW=360;ctaH=90;hlX=50;hlY=36;bdX=50;bdY=56;ctaX=50;ctaY=76;
+  } else if(isWide){
+    hlSize=Math.round(h*0.16);bdSize=Math.round(h*0.09);ctaSize=Math.round(h*0.09);
+    ctaW=Math.round(h*1.1);ctaH=Math.round(h*0.20);hlX=50;hlY=35;bdX=50;bdY=54;ctaX=50;ctaY=76;
+  } else if(isPortrait){
+    hlSize=Math.round(Math.sqrt(area)*0.07);bdSize=Math.round(Math.sqrt(area)*0.043);
+    ctaSize=Math.round(Math.sqrt(area)*0.047);ctaW=Math.round(w*0.78);ctaH=Math.round(Math.sqrt(area)*0.11);
+    hlX=50;hlY=36;bdX=50;bdY=52;ctaX=50;ctaY=72;
+  } else {
+    hlSize=Math.round(Math.sqrt(area)*0.09);bdSize=Math.round(Math.sqrt(area)*0.055);
+    ctaSize=Math.round(Math.sqrt(area)*0.06);ctaW=Math.round(Math.sqrt(area)*0.48);
+    ctaH=Math.round(Math.sqrt(area)*0.14);hlX=50;hlY=38;bdX=50;bdY=56;ctaX=50;ctaY=76;
+  }
+  return {
+    bg:{color:"#1a1a2e"},
+    image:{src:null,x:0,y:0,w:100,h:100,opacity:100},
+    logo:{src:null,x:10,y:10,w:80,h:40,opacity:100},
+    visual:{src:null,x:50,y:50,w:200,h:200,opacity:100},
+    headline:{text:"Your Headline Here",color:"#ffffff",size:hlSize,font:"Inter",bold:true,x:hlX,y:hlY,anim:"fade-in"},
+    body:{text:"Supporting message goes here",color:"#cccccc",size:bdSize,font:"Inter",bold:false,x:bdX,y:bdY,anim:"slide-up"},
+    cta:{text:"Learn More",bgColor:"#0066ff",textColor:"#ffffff",size:ctaSize,font:"Inter",w:ctaW,h:ctaH,radius:6,x:ctaX,y:ctaY,anim:"zoom-in"},
+  };
+}
+
+// ── State ─────────────────────────────────────────────────────────────────────
+const state = { fmt:FORMATS[0], layers:defaultLayers(FORMATS[0]), mode:"static", activeTab:"bg" };
+const savedLayers = {};
+const formatImages = {};
+
+function saveCurrent(){ savedLayers[state.fmt.label]=JSON.parse(JSON.stringify(state.layers)); }
+function loadFormat(fmt){
+  saveCurrent(); state.fmt=fmt;
+  if(savedLayers[fmt.label]){ state.layers=JSON.parse(JSON.stringify(savedLayers[fmt.label])); }
+  else { state.layers=defaultLayers(fmt); if(formatImages[fmt.label]) state.layers.image.src=formatImages[fmt.label]; }
+}
+
+// ── Preview ───────────────────────────────────────────────────────────────────
+function renderPreview(animating=false){
+  const {fmt,layers}=state, sc=getScale(fmt), W=fmt.w*sc, H=fmt.h*sc, thin=fmt.h<=100;
+  const wrapper=document.getElementById("banner-wrapper"); wrapper.innerHTML="";
+  const clip=document.createElement("div");
+  clip.style.cssText=`width:${W}px;height:${H}px;overflow:hidden;border-radius:4px;box-shadow:0 4px 24px rgba(0,0,0,.18);flex-shrink:0;`;
+  const banner=document.createElement("div"); banner.id="banner";
+  banner.style.cssText=`width:${W}px;height:${H}px;position:relative;overflow:hidden;background:${layers.bg.color};`;
+  if(layers.image.src){const img=document.createElement("img");img.src=layers.image.src;img.style.cssText=`position:absolute;left:${layers.image.x}%;top:${layers.image.y}%;width:${layers.image.w}%;height:${layers.image.h}%;object-fit:cover;opacity:${layers.image.opacity/100};`;banner.appendChild(img);}
+  if(layers.logo.src){const img=document.createElement("img");img.src=layers.logo.src;img.style.cssText=`position:absolute;left:${layers.logo.x*sc}px;top:${layers.logo.y*sc}px;width:${layers.logo.w*sc}px;height:${layers.logo.h*sc}px;object-fit:contain;opacity:${layers.logo.opacity/100};`;banner.appendChild(img);}
+  if(layers.visual.src){const img=document.createElement("img");img.src=layers.visual.src;img.style.cssText=`position:absolute;left:${layers.visual.x}%;top:${layers.visual.y}%;transform:translate(-50%,-50%);width:${layers.visual.w*sc}px;height:${layers.visual.h*sc}px;object-fit:contain;opacity:${layers.visual.opacity/100};`;banner.appendChild(img);}
+  if(thin){
+    const pad=Math.round(H*0.15),ctaW=Math.min(layers.cta.w*sc,W*0.35),ctaH=Math.min(layers.cta.h*sc,H*0.72);
+    const hl=document.createElement("div");hl.textContent=layers.headline.text;
+    hl.style.cssText=`position:absolute;left:${pad}px;top:50%;transform:translateY(-50%);width:${W-ctaW-pad*3.5}px;color:${layers.headline.color};font-size:${layers.headline.size*sc}px;font-family:${layers.headline.font};font-weight:${layers.headline.bold?700:400};line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;${a(layers.headline.anim,0.1,animating)}`;
+    banner.appendChild(hl);
+    const cta=document.createElement("div");cta.textContent=layers.cta.text;
+    cta.style.cssText=`position:absolute;right:${pad}px;top:50%;transform:translateY(-50%);background:${layers.cta.bgColor};color:${layers.cta.textColor};font-size:${layers.cta.size*sc}px;font-family:${layers.cta.font};width:${ctaW}px;height:${ctaH}px;border-radius:${layers.cta.radius}px;display:flex;align-items:center;justify-content:center;font-weight:700;cursor:pointer;white-space:nowrap;${a(layers.cta.anim,0.4,animating)}`;
+    banner.appendChild(cta);
+  } else {
+    const hl=document.createElement("div");hl.textContent=layers.headline.text;
+    hl.style.cssText=`position:absolute;left:${layers.headline.x}%;top:${layers.headline.y}%;transform:translate(-50%,-50%);text-align:center;width:85%;color:${layers.headline.color};font-size:${layers.headline.size*sc}px;font-family:${layers.headline.font};font-weight:${layers.headline.bold?700:400};line-height:1.2;word-wrap:break-word;${a(layers.headline.anim,0.1,animating)}`;
+    banner.appendChild(hl);
+    const bd=document.createElement("div");bd.textContent=layers.body.text;
+    bd.style.cssText=`position:absolute;left:${layers.body.x}%;top:${layers.body.y}%;transform:translate(-50%,-50%);text-align:center;width:80%;color:${layers.body.color};font-size:${layers.body.size*sc}px;font-family:${layers.body.font};font-weight:${layers.body.bold?700:400};line-height:1.4;word-wrap:break-word;${a(layers.body.anim,0.35,animating)}`;
+    banner.appendChild(bd);
+    const ctaW=Math.min(layers.cta.w*sc,W*0.85),ctaH=layers.cta.h*sc;
+    const cta=document.createElement("div");cta.textContent=layers.cta.text;
+    cta.style.cssText=`position:absolute;left:${layers.cta.x}%;top:${layers.cta.y}%;transform:translate(-50%,-50%);background:${layers.cta.bgColor};color:${layers.cta.textColor};font-size:${layers.cta.size*sc}px;font-family:${layers.cta.font};width:${ctaW}px;height:${ctaH}px;border-radius:${layers.cta.radius}px;display:flex;align-items:center;justify-content:center;font-weight:700;cursor:pointer;white-space:nowrap;${a(layers.cta.anim,0.6,animating)}`;
+    banner.appendChild(cta);
+  }
+  clip.appendChild(banner); wrapper.appendChild(clip);
+  document.getElementById("canvas-info").textContent=`${fmt.label} — ${fmt.w}×${fmt.h}px (scaled preview)`;
+}
+function a(name,delay,active){ if(!active||name==="none"||!ANIM_MAP[name])return""; return`animation:${ANIM_MAP[name]} 0.7s ease-out ${delay}s both;`; }
+
+// ── Controls ──────────────────────────────────────────────────────────────────
+function upd(layer,key,val){ state.layers[layer][key]=val; renderPreview(state.mode==="animated"); }
+function el(tag,attrs={},...children){ const e=document.createElement(tag); Object.entries(attrs).forEach(([k,v])=>{ if(k==="class")e.className=v; else if(k==="style")e.style.cssText=v; else e.setAttribute(k,v); }); children.forEach(c=>c&&e.appendChild(typeof c==="string"?document.createTextNode(c):c)); return e; }
+function lbl(t){ return el("div",{class:"ctrl-label"},t); }
+function row(...cols){ const r=el("div",{class:"ctrl-row"}); cols.forEach(c=>{const w=el("div",{class:"ctrl-col"});w.appendChild(c);r.appendChild(w);}); return r; }
+function section(title,...children){ const w=el("div",{class:"ctrl-section"}); w.appendChild(el("div",{class:"ctrl-section-title"},title)); children.forEach(c=>c&&w.appendChild(c)); return w; }
+function numInput(label,value,onChange){ const w=el("div",{style:"margin-bottom:10px"}); w.appendChild(lbl(label)); const i=el("input",{type:"number",class:"ctrl-input",value,min:0,style:"width:100%"}); i.addEventListener("input",e=>onChange(Number(e.target.value))); w.appendChild(i); return w; }
+function textInput(label,value,onChange){ const w=el("div",{style:"margin-bottom:10px"}); if(label)w.appendChild(lbl(label)); const i=el("input",{type:"text",class:"ctrl-input",value}); i.addEventListener("input",e=>onChange(e.target.value)); w.appendChild(i); return w; }
+function selectField(label,value,options,onChange){ const w=el("div",{style:"margin-bottom:10px"}); w.appendChild(lbl(label)); const s=el("select",{class:"ctrl-input"}); options.forEach(o=>{const opt=el("option",{value:o},o);if(o===value)opt.selected=true;s.appendChild(opt);}); s.addEventListener("change",e=>onChange(e.target.value)); w.appendChild(s); return w; }
+function colorPick(label,value,onChange){ const w=el("div",{class:"ctrl-col"}); w.appendChild(lbl(label)); const r=el("div",{class:"ctrl-color-wrap"}); const inp=el("input",{type:"color",value}); const hex=el("span",{},value); inp.addEventListener("input",e=>{hex.textContent=e.target.value;onChange(e.target.value);}); r.appendChild(inp);r.appendChild(hex);w.appendChild(r); return w; }
+function slider(label,value,min,max,onChange){ const w=el("div",{style:"margin-bottom:10px"}); const lb=lbl(`${label}: ${value}`); const inp=el("input",{type:"range",min,max,value,style:"width:100%;accent-color:#111"}); inp.addEventListener("input",e=>{lb.textContent=`${label}: ${e.target.value}`;onChange(Number(e.target.value));}); w.appendChild(lb);w.appendChild(inp); return w; }
+function xySliders(layer,xVal,yVal){ return row(slider("X %",xVal,0,100,v=>upd(layer,"x",v)),slider("Y %",yVal,0,100,v=>upd(layer,"y",v))); }
+function imageUpload(label,current,onUpload){ const w=el("div",{style:"margin-bottom:12px"}); w.appendChild(lbl(label)); const r=el("div",{class:"upload-row"}); const btn=el("button",{class:"btn-upload"},current?"Replace":"Upload"); const ok=el("span",{class:"upload-ok"},current?"✓ Loaded":""); const inp=el("input",{type:"file",accept:"image/*",style:"display:none"}); btn.onclick=()=>inp.click(); inp.onchange=e=>{const f=e.target.files[0];if(!f)return;const rd=new FileReader();rd.onload=ev=>{ok.textContent="✓ Loaded";btn.textContent="Replace";onUpload(ev.target.result);};rd.readAsDataURL(f);}; r.appendChild(btn);r.appendChild(ok);r.appendChild(inp);w.appendChild(r); return w; }
+
+const PANELS = {
+  bg: ()=>{ const l=state.layers,f=document.createDocumentFragment(); f.appendChild(section("Background",colorPick("Color",l.bg.color,v=>upd("bg","color",v)),imageUpload("Background Image",l.image.src,v=>upd("image","src",v)),...(l.image.src?[slider("Opacity",l.image.opacity,0,100,v=>upd("image","opacity",v)),row(slider("X%",l.image.x,0,100,v=>upd("image","x",v)),slider("Y%",l.image.y,0,100,v=>upd("image","y",v))),row(slider("W%",l.image.w,0,100,v=>upd("image","w",v)),slider("H%",l.image.h,0,100,v=>upd("image","h",v)))]:[]))); return f; },
+  logo: ()=>{ const l=state.layers,f=document.createDocumentFragment(); f.appendChild(section("Logo",imageUpload("Logo file",l.logo.src,v=>upd("logo","src",v)),...(l.logo.src?[slider("Opacity",l.logo.opacity,0,100,v=>upd("logo","opacity",v)),row(numInput("X (px)",l.logo.x,v=>upd("logo","x",v)),numInput("Y (px)",l.logo.y,v=>upd("logo","y",v))),row(numInput("W (px)",l.logo.w,v=>upd("logo","w",v)),numInput("H (px)",l.logo.h,v=>upd("logo","h",v)))]:[]))); return f; },
+  visual: ()=>{ const l=state.layers,f=document.createDocumentFragment(); f.appendChild(section("Visual Element",imageUpload("Image / PNG",l.visual.src,v=>upd("visual","src",v)),...(l.visual.src?[slider("Opacity",l.visual.opacity,0,100,v=>upd("visual","opacity",v)),xySliders("visual",l.visual.x,l.visual.y),row(numInput("W (px)",l.visual.w,v=>upd("visual","w",v)),numInput("H (px)",l.visual.h,v=>upd("visual","h",v)))]:[]))); return f; },
+  headline: ()=>{ const l=state.layers,f=document.createDocumentFragment(); f.appendChild(section("Headline",textInput("Text",l.headline.text,v=>upd("headline","text",v)),row(colorPick("Color",l.headline.color,v=>upd("headline","color",v)),numInput("Size (px)",l.headline.size,v=>upd("headline","size",v))),selectField("Font",l.headline.font,FONTS,v=>upd("headline","font",v)),xySliders("headline",l.headline.x,l.headline.y),selectField("Animation",l.headline.anim,ANIMS,v=>upd("headline","anim",v)))); return f; },
+  body: ()=>{ const l=state.layers,f=document.createDocumentFragment(); f.appendChild(section("Body Copy",textInput("Text",l.body.text,v=>upd("body","text",v)),row(colorPick("Color",l.body.color,v=>upd("body","color",v)),numInput("Size (px)",l.body.size,v=>upd("body","size",v))),selectField("Font",l.body.font,FONTS,v=>upd("body","font",v)),xySliders("body",l.body.x,l.body.y),selectField("Animation",l.body.anim,ANIMS,v=>upd("body","anim",v)))); return f; },
+  cta: ()=>{ const l=state.layers,f=document.createDocumentFragment(); f.appendChild(section("CTA Button",textInput("Label",l.cta.text,v=>upd("cta","text",v)),row(colorPick("BG",l.cta.bgColor,v=>upd("cta","bgColor",v)),colorPick("Text",l.cta.textColor,v=>upd("cta","textColor",v))),row(numInput("W (px)",l.cta.w,v=>upd("cta","w",v)),numInput("H (px)",l.cta.h,v=>upd("cta","h",v))),row(numInput("Radius (px)",l.cta.radius,v=>upd("cta","radius",v)),numInput("Size (px)",l.cta.size,v=>upd("cta","size",v))),selectField("Font",l.cta.font,FONTS,v=>upd("cta","font",v)),xySliders("cta",l.cta.x,l.cta.y),selectField("Animation",l.cta.anim,ANIMS,v=>upd("cta","anim",v)))); return f; },
+};
+
+function renderPanel(tab){ const c=document.getElementById("panel-content"); c.innerHTML=""; c.appendChild(PANELS[tab]()); }
+
+// ── Export ────────────────────────────────────────────────────────────────────
+function slug(fmt){ return`${fmt.label.replace(/ /g,"_")}_${fmt.w}x${fmt.h}`; }
+function dl(href,filename){ const a=document.createElement("a");a.href=href;a.download=filename;a.click(); }
+
+async function exportPNG(){
+  const btn=document.getElementById("btn-png"); btn.textContent="Exporting…"; btn.disabled=true;
+  try{
+    const {fmt}=state, sc=getScale(fmt), banner=document.getElementById("banner");
+    if(!banner) throw new Error("Banner not found");
+    const {toPng}=await import("https://esm.run/html-to-image@1.11.11");
+    const dataUrl=await toPng(banner,{width:fmt.w,height:fmt.h,style:{transform:`scale(${1/sc})`,transformOrigin:"top left",width:fmt.w+"px",height:fmt.h+"px"}});
+    dl(dataUrl,slug(fmt)+".png");
+  } catch(e){ alert("PNG export failed: "+e.message); }
+  btn.textContent="↓ Export PNG"; btn.disabled=false;
+}
+
+function exportHTML5(){
+  const {fmt,layers}=state;
+  const ac=(anim,delay)=>{ if(anim==="none"||!ANIM_MAP[anim])return""; return`animation:${ANIM_MAP[anim]} 0.7s ease-out ${delay}s both;`; };
+  const html=`<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="ad.size" content="width=${fmt.w},height=${fmt.h}"><title>${fmt.label} ${fmt.w}x${fmt.h}</title><style>*{margin:0;padding:0;box-sizing:border-box}body{width:${fmt.w}px;height:${fmt.h}px;overflow:hidden;font-family:sans-serif}#banner{width:${fmt.w}px;height:${fmt.h}px;position:relative;overflow:hidden;background:${layers.bg.color}}#hl{position:absolute;left:${layers.headline.x}%;top:${layers.headline.y}%;transform:translate(-50%,-50%);text-align:center;width:85%;color:${layers.headline.color};font-size:${layers.headline.size}px;font-family:${layers.headline.font};font-weight:${layers.headline.bold?700:400};line-height:1.2;word-wrap:break-word;${ac(layers.headline.anim,0.1)}}#bd{position:absolute;left:${layers.body.x}%;top:${layers.body.y}%;transform:translate(-50%,-50%);text-align:center;width:80%;color:${layers.body.color};font-size:${layers.body.size}px;font-family:${layers.body.font};font-weight:${layers.body.bold?700:400};line-height:1.4;${ac(layers.body.anim,0.35)}}#cta{position:absolute;left:${layers.cta.x}%;top:${layers.cta.y}%;transform:translate(-50%,-50%);background:${layers.cta.bgColor};color:${layers.cta.textColor};font-size:${layers.cta.size}px;font-family:${layers.cta.font};width:${layers.cta.w}px;height:${layers.cta.h}px;border-radius:${layers.cta.radius}px;display:flex;align-items:center;justify-content:center;font-weight:700;cursor:pointer;white-space:nowrap;${ac(layers.cta.anim,0.6)}}@keyframes adsFadeIn{from{opacity:0}to{opacity:1}}@keyframes adsSlideLeft{from{opacity:0;transform:translateX(calc(-50% + 30px))}to{opacity:1;transform:translateX(-50%)}}@keyframes adsSlideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}@keyframes adsZoomIn{from{opacity:0;transform:scale(.8)}to{opacity:1;transform:scale(1)}}@keyframes adsBounce{0%{opacity:0;transform:scale(.6)}60%{transform:scale(1.1)}100%{opacity:1;transform:scale(1)}}</style></head><body><div id="banner">${layers.image.src?`<img src="${layers.image.src}" style="position:absolute;left:${layers.image.x}%;top:${layers.image.y}%;width:${layers.image.w}%;height:${layers.image.h}%;object-fit:cover;opacity:${layers.image.opacity/100}">`:``}${layers.logo.src?`<img src="${layers.logo.src}" style="position:absolute;left:${layers.logo.x}px;top:${layers.logo.y}px;width:${layers.logo.w}px;height:${layers.logo.h}px;object-fit:contain;opacity:${layers.logo.opacity/100}">`:``}${layers.visual.src?`<img src="${layers.visual.src}" style="position:absolute;left:${layers.visual.x}%;top:${layers.visual.y}%;transform:translate(-50%,-50%);width:${layers.visual.w}px;height:${layers.visual.h}px;object-fit:contain;opacity:${layers.visual.opacity/100}">`:``}<div id="hl">${layers.headline.text}</div><div id="bd">${layers.body.text}</div><div id="cta">${layers.cta.text}</div></div></body></html>`;
+  const blob=new Blob([html],{type:"text/html"});
+  dl(URL.createObjectURL(blob),slug(fmt)+"_HTML5.html");
+}
+
+// ── Bulk Upload ───────────────────────────────────────────────────────────────
+let bulkFiles=[];
+function openBulkModal(){
+  const inp=document.createElement("input"); inp.type="file"; inp.accept="image/*"; inp.multiple=true;
+  inp.onchange=async e=>{
+    const files=Array.from(e.target.files); if(!files.length)return;
+    bulkFiles=await Promise.all(files.map(f=>new Promise(res=>{const r=new FileReader();r.onload=ev=>res({name:f.name,src:ev.target.result});r.readAsDataURL(f);})));
+    renderBulkRows(); document.getElementById("bulk-modal-overlay").classList.add("open");
+  }; inp.click();
+}
+function renderBulkRows(){
+  const container=document.getElementById("bulk-rows"); container.innerHTML="";
+  bulkFiles.forEach((file,i)=>{
+    const row=document.createElement("div"); row.className="bulk-row";
+    const thumb=document.createElement("img"); thumb.className="bulk-thumb"; thumb.src=file.src;
+    const name=document.createElement("div"); name.className="bulk-filename"; name.textContent=file.name;
+    const sel=document.createElement("select"); sel.className="bulk-select"; sel.dataset.fileIndex=i;
+    const blank=document.createElement("option"); blank.value=""; blank.textContent="— select format —"; sel.appendChild(blank);
+    FORMATS.forEach(fmt=>{ const opt=document.createElement("option"); opt.value=fmt.label; opt.textContent=`${fmt.label} (${fmt.w}×${fmt.h})`; sel.appendChild(opt); });
+    const lower=file.name.toLowerCase();
+    FORMATS.forEach(fmt=>{ const key=fmt.label.toLowerCase().replace(/ /g,"_"); if(lower.includes(key)||lower.includes(fmt.w+"x"+fmt.h)) sel.value=fmt.label; });
+    row.appendChild(thumb); row.appendChild(name); row.appendChild(sel); container.appendChild(row);
+  });
+}
+
+// ── Init ──────────────────────────────────────────────────────────────────────
+function buildFormatSidebar(){
+  const sidebar=document.getElementById("sidebar-left");
+  const header=document.getElementById("app-header");
+  sidebar.innerHTML=""; sidebar.appendChild(header);
+  ["IAB","Native"].forEach(cat=>{
+    const lbl=document.createElement("div"); lbl.className="format-group-label"; lbl.textContent=cat==="IAB"?"IAB Formats":"Native"; sidebar.appendChild(lbl);
+    FORMATS.filter(f=>f.cat===cat).forEach(fmt=>{
+      const item=document.createElement("div"); item.className="format-item"+(fmt.label===state.fmt.label?" active":"");
+      item.innerHTML=`<strong>${fmt.label}</strong><span>${fmt.w}×${fmt.h}</span>`;
+      item.onclick=()=>{ loadFormat(fmt); document.querySelectorAll(".format-item").forEach(el=>el.classList.remove("active")); item.classList.add("active"); refresh(); };
+      sidebar.appendChild(item);
+    });
+    const spacer=document.createElement("div"); spacer.className="format-spacer"; sidebar.appendChild(spacer);
+  });
+}
+function buildTabs(){
+  const bar=document.getElementById("tabs-bar"); bar.innerHTML="";
+  Object.keys(PANELS).forEach(key=>{
+    const btn=document.createElement("button"); btn.className="tab-btn"+(key===state.activeTab?" active":""); btn.textContent=key;
+    btn.onclick=()=>{ state.activeTab=key; document.querySelectorAll(".tab-btn").forEach(b=>b.classList.remove("active")); btn.classList.add("active"); renderPanel(key); };
+    bar.appendChild(btn);
+  });
+}
+function initModeBar(){
+  const btns=document.querySelectorAll(".mode-btn"), replay=document.getElementById("replay-btn");
+  btns.forEach(btn=>{ btn.onclick=()=>{ state.mode=btn.dataset.mode; btns.forEach(b=>b.classList.remove("active")); btn.classList.add("active"); replay.style.display=state.mode==="animated"?"inline-block":"none"; triggerAnim(); }; });
+  replay.onclick=triggerAnim;
+}
+function triggerAnim(){ if(state.mode!=="animated")return; renderPreview(false); setTimeout(()=>renderPreview(true),50); }
+function refresh(){ renderPreview(state.mode==="animated"); renderPanel(state.activeTab); }
+
+document.getElementById("btn-png").onclick=exportPNG;
+document.getElementById("btn-html5").onclick=exportHTML5;
+document.getElementById("btn-bulk-upload").onclick=openBulkModal;
+document.getElementById("btn-reset").onclick=()=>{ state.layers=defaultLayers(state.fmt); delete savedLayers[state.fmt.label]; refresh(); };
+document.getElementById("bulk-cancel").onclick=()=>{ document.getElementById("bulk-modal-overlay").classList.remove("open"); bulkFiles=[]; };
+document.getElementById("bulk-apply").onclick=()=>{
+  document.querySelectorAll(".bulk-select").forEach(sel=>{ const fmtLabel=sel.value; if(!fmtLabel)return; const idx=Number(sel.dataset.fileIndex); formatImages[fmtLabel]=bulkFiles[idx].src; if(savedLayers[fmtLabel])savedLayers[fmtLabel].image.src=bulkFiles[idx].src; });
+  if(formatImages[state.fmt.label]) state.layers.image.src=formatImages[state.fmt.label];
+  document.getElementById("bulk-modal-overlay").classList.remove("open"); bulkFiles=[]; refresh();
+};
+document.getElementById("bulk-modal-overlay").onclick=e=>{ if(e.target.id==="bulk-modal-overlay"){ document.getElementById("bulk-modal-overlay").classList.remove("open"); bulkFiles=[]; } };
+
+buildFormatSidebar(); buildTabs(); initModeBar(); refresh();
+</script>
 </body>
 </html>
