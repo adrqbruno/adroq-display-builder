@@ -249,7 +249,6 @@ function a(name,delay,active){ if(!active||name==="none"||!ANIM_MAP[name])return
 
 // ── Controls ──────────────────────────────────────────────────────────────────
 function clearLayerAllFormats(layerKey, defaultVal) {
-  if(!defaultVal) defaultVal = {};
   const resetVal = JSON.parse(JSON.stringify(defaultVal));
   Object.keys(savedLayers).forEach(fmt => {
     savedLayers[fmt][layerKey] = JSON.parse(JSON.stringify(resetVal));
@@ -271,7 +270,7 @@ function clearBtn(layerKey, label, defaultVal) {
   wrap.appendChild(btn);
   return wrap;
 }
-function el(tag,attrs,...children){ if(!attrs) attrs={}; const e=document.createElement(tag); Object.entries(attrs).forEach(([k,v])=>{ if(k==="class")e.className=v; else if(k==="style")e.style.cssText=v; else e.setAttribute(k,v); }); children.forEach(c=>c&&e.appendChild(typeof c==="string"?document.createTextNode(c):c)); return e; }
+function el(tag,attrs={},...children){ const e=document.createElement(tag); Object.entries(attrs).forEach(([k,v])=>{ if(k==="class")e.className=v; else if(k==="style")e.style.cssText=v; else e.setAttribute(k,v); }); children.forEach(c=>c&&e.appendChild(typeof c==="string"?document.createTextNode(c):c)); return e; }
 function lbl(t){ return el("div",{class:"ctrl-label"},t); }
 function row(...cols){ const r=el("div",{class:"ctrl-row"}); cols.forEach(c=>{const w=el("div",{class:"ctrl-col"});w.appendChild(c);r.appendChild(w);}); return r; }
 function section(title,...children){ const w=el("div",{class:"ctrl-section"}); w.appendChild(el("div",{class:"ctrl-section-title"},title)); children.forEach(c=>c&&w.appendChild(c)); return w; }
@@ -285,102 +284,17 @@ function imageUpload(label,current,onUpload){ const w=el("div",{style:"margin-bo
 
 const PANELS = {
   bg: ()=>{ const l=state.layers,f=document.createDocumentFragment(); f.appendChild(section("Background",colorPick("Color",l.bg.color,v=>upd("bg","color",v)),imageUpload("Background Image",l.image.src,v=>upd("image","src",v)),...(l.image.src?[slider("Opacity",l.image.opacity,0,100,v=>upd("image","opacity",v)),row(slider("X%",l.image.x,0,100,v=>upd("image","x",v)),slider("Y%",l.image.y,0,100,v=>upd("image","y",v))),row(slider("W%",l.image.w,0,100,v=>upd("image","w",v)),slider("H%",l.image.h,0,100,v=>upd("image","h",v)))]:[]))); return f; },
-  logo: ()=>{ const l=state.layers,f=document.createDocumentFragment(); f.appendChild(section("Logo",imageUpload("Logo file",l.logo.src,v=>upd("logo","src",v)),...(l.logo.src?[slider("Opacity",l.logo.opacity,0,100,v=>upd("logo","opacity",v)),row(numInput("X (px)",l.logo.x,v=>upd("logo","x",v)),numInput("Y (px)",l.logo.y,v=>upd("logo","y",v))),row(numInput("W (px)",l.logo.w,v=>upd("logo","w",v)),numInput("H (px)",l.logo.h,v=>upd("logo","h",v))),clearBtn("logo","logo",{src:null,x:10,y:10,w:80,h:40,opacity:100})]:[]))); return f; },
-  visual: ()=>{ const l=state.layers,f=document.createDocumentFragment(); f.appendChild(section("Visual Element",imageUpload("Image / PNG",l.visual.src,v=>upd("visual","src",v)),...(l.visual.src?[slider("Opacity",l.visual.opacity,0,100,v=>upd("visual","opacity",v)),xySliders("visual",l.visual.x,l.visual.y),row(numInput("W (px)",l.visual.w,v=>upd("visual","w",v)),numInput("H (px)",l.visual.h,v=>upd("visual","h",v))),clearBtn("visual","visual element",{src:null,x:50,y:50,w:200,h:200,opacity:100})]:[]))); return f; },
-  headline: ()=>{ const l=state.layers,f=document.createDocumentFragment(); f.appendChild(section("Headline",textInput("Text",l.headline.text,v=>upd("headline","text",v)),row(colorPick("Color",l.headline.color,v=>upd("headline","color",v)),numInput("Size (px)",l.headline.size,v=>upd("headline","size",v))),selectField("Font",l.headline.font,FONTS,v=>upd("headline","font",v)),xySliders("headline",l.headline.x,l.headline.y),selectField("Animation",l.headline.anim,ANIMS,v=>upd("headline","anim",v)),clearBtn("headline","headline",{text:"Your Headline Here",color:"#ffffff",size:24,font:"Inter",bold:true,x:50,y:38,anim:"fade-in"}))); return f; },
-  body: ()=>{ const l=state.layers,f=document.createDocumentFragment(); f.appendChild(section("Body Copy",textInput("Text",l.body.text,v=>upd("body","text",v)),row(colorPick("Color",l.body.color,v=>upd("body","color",v)),numInput("Size (px)",l.body.size,v=>upd("body","size",v))),selectField("Font",l.body.font,FONTS,v=>upd("body","font",v)),xySliders("body",l.body.x,l.body.y),selectField("Animation",l.body.anim,ANIMS,v=>upd("body","anim",v)),clearBtn("body","body copy",{text:"",color:"#cccccc",size:14,font:"Inter",bold:false,x:50,y:56,anim:"slide-up"}))); return f; },
-  cta: ()=>{ const l=state.layers,f=document.createDocumentFragment(); f.appendChild(section("CTA Button",textInput("Label",l.cta.text,v=>upd("cta","text",v)),row(colorPick("BG",l.cta.bgColor,v=>upd("cta","bgColor",v)),colorPick("Text",l.cta.textColor,v=>upd("cta","textColor",v))),row(numInput("W (px)",l.cta.w,v=>upd("cta","w",v)),numInput("H (px)",l.cta.h,v=>upd("cta","h",v))),row(numInput("Radius (px)",l.cta.radius,v=>upd("cta","radius",v)),numInput("Size (px)",l.cta.size,v=>upd("cta","size",v))),selectField("Font",l.cta.font,FONTS,v=>upd("cta","font",v)),xySliders("cta",l.cta.x,l.cta.y),selectField("Animation",l.cta.anim,ANIMS,v=>upd("cta","anim",v)),clearBtn("cta","CTA",{text:"",bgColor:"#0066ff",textColor:"#ffffff",size:14,font:"Inter",w:120,h:36,radius:6,x:50,y:76,anim:"zoom-in"}))); return f; },
+  logo: ()=>{ const l=state.layers,f=document.createDocumentFragment(); f.appendChild(section("Logo",imageUpload("Logo file",l.logo.src,v=>upd("logo","src",v)),...(l.logo.src?[slider("Opacity",l.logo.opacity,0,100,v=>upd("logo","opacity",v)),row(numInput("X (px)",l.logo.x,v=>upd("logo","x",v)),numInput("Y (px)",l.logo.y,v=>upd("logo","y",v))),row(numInput("W (px)",l.logo.w,v=>upd("logo","w",v)),numInput("H (px)",l.logo.h,v=>upd("logo","h",v)))]:[]))); return f; },
+  visual: ()=>{ const l=state.layers,f=document.createDocumentFragment(); f.appendChild(section("Visual Element",imageUpload("Image / PNG",l.visual.src,v=>upd("visual","src",v)),...(l.visual.src?[slider("Opacity",l.visual.opacity,0,100,v=>upd("visual","opacity",v)),xySliders("visual",l.visual.x,l.visual.y),row(numInput("W (px)",l.visual.w,v=>upd("visual","w",v)),numInput("H (px)",l.visual.h,v=>upd("visual","h",v)))]:[]))); return f; },
+  headline: ()=>{ const l=state.layers,f=document.createDocumentFragment(); f.appendChild(section("Headline",textInput("Text",l.headline.text,v=>upd("headline","text",v)),row(colorPick("Color",l.headline.color,v=>upd("headline","color",v)),numInput("Size (px)",l.headline.size,v=>upd("headline","size",v))),selectField("Font",l.headline.font,FONTS,v=>upd("headline","font",v)),xySliders("headline",l.headline.x,l.headline.y),selectField("Animation",l.headline.anim,ANIMS,v=>upd("headline","anim",v)))); return f; },
+  body: ()=>{ const l=state.layers,f=document.createDocumentFragment(); f.appendChild(section("Body Copy",textInput("Text",l.body.text,v=>upd("body","text",v)),row(colorPick("Color",l.body.color,v=>upd("body","color",v)),numInput("Size (px)",l.body.size,v=>upd("body","size",v))),selectField("Font",l.body.font,FONTS,v=>upd("body","font",v)),xySliders("body",l.body.x,l.body.y),selectField("Animation",l.body.anim,ANIMS,v=>upd("body","anim",v)))); return f; },
+  cta: ()=>{ const l=state.layers,f=document.createDocumentFragment(); f.appendChild(section("CTA Button",textInput("Label",l.cta.text,v=>upd("cta","text",v)),row(colorPick("BG",l.cta.bgColor,v=>upd("cta","bgColor",v)),colorPick("Text",l.cta.textColor,v=>upd("cta","textColor",v))),row(numInput("W (px)",l.cta.w,v=>upd("cta","w",v)),numInput("H (px)",l.cta.h,v=>upd("cta","h",v))),row(numInput("Radius (px)",l.cta.radius,v=>upd("cta","radius",v)),numInput("Size (px)",l.cta.size,v=>upd("cta","size",v))),selectField("Font",l.cta.font,FONTS,v=>upd("cta","font",v)),xySliders("cta",l.cta.x,l.cta.y),selectField("Animation",l.cta.anim,ANIMS,v=>upd("cta","anim",v)))); return f; },
 };
 
 function renderPanel(tab){ const c=document.getElementById("panel-content"); c.innerHTML=""; c.appendChild(PANELS[tab]()); }
 
 // ── Export ────────────────────────────────────────────────────────────────────
-async function exportAll() {
-  const btn = document.getElementById("btn-export-all");
-  btn.textContent = "Zipping…"; btn.disabled = true;
-
-  try {
-    const { default: JSZip } = await import("https://esm.run/jszip@3.10.1");
-    const zip = new JSZip();
-
-    // Save current format first
-    saveCurrent();
-
-    // Collect all formats that have been touched (in savedLayers) + current
-    const allFmts = FORMATS.filter(f => savedLayers[f.label]);
-    if (allFmts.length === 0) {
-      alert("No formats to export yet — make some edits first.");
-      btn.textContent = "↓ Export All"; btn.disabled = false;
-      return;
-    }
-
-    const { toPng } = await import("https://esm.run/html-to-image@1.11.11");
-    const ac = (anim, delay) => {
-      if (anim === "none" || !ANIM_MAP[anim]) return "";
-      return `animation:${ANIM_MAP[anim]} 0.7s ease-out ${delay}s both;`;
-    };
-
-    for (const fmt of allFmts) {
-      const layers = savedLayers[fmt.label];
-      const sc = getScale(fmt);
-      const W = fmt.w * sc, H = fmt.h * sc;
-      const thin = fmt.h <= 100;
-      const fmtSlug = fmt.label.replace(/ /g,"_") + "_" + fmt.w + "x" + fmt.h;
-      const folder = zip.folder(fmtSlug);
-
-      // ── Build offscreen banner DOM ──
-      const wrap = document.createElement("div");
-      wrap.style.cssText = `position:fixed;left:-9999px;top:-9999px;width:${W}px;height:${H}px;overflow:hidden;`;
-      const banner = document.createElement("div");
-      banner.style.cssText = `width:${W}px;height:${H}px;position:relative;overflow:hidden;background:${layers.bg.color};`;
-
-      if (layers.image.src) { const img = document.createElement("img"); img.src=layers.image.src; img.style.cssText=`position:absolute;left:${layers.image.x}%;top:${layers.image.y}%;width:${layers.image.w}%;height:${layers.image.h}%;object-fit:cover;opacity:${layers.image.opacity/100};`; banner.appendChild(img); }
-      if (layers.logo.src)  { const img = document.createElement("img"); img.src=layers.logo.src;  img.style.cssText=`position:absolute;left:${layers.logo.x*sc}px;top:${layers.logo.y*sc}px;width:${layers.logo.w*sc}px;height:${layers.logo.h*sc}px;object-fit:contain;opacity:${layers.logo.opacity/100};`; banner.appendChild(img); }
-      if (layers.visual.src){ const img = document.createElement("img"); img.src=layers.visual.src; img.style.cssText=`position:absolute;left:${layers.visual.x}%;top:${layers.visual.y}%;transform:translate(-50%,-50%);width:${layers.visual.w*sc}px;height:${layers.visual.h*sc}px;object-fit:contain;opacity:${layers.visual.opacity/100};`; banner.appendChild(img); }
-
-      if (thin) {
-        const pad=Math.round(H*0.15), ctaW=Math.min(layers.cta.w*sc,W*0.35), ctaH=Math.min(layers.cta.h*sc,H*0.72);
-        const hl=document.createElement("div"); hl.textContent=layers.headline.text; hl.style.cssText=`position:absolute;left:${pad}px;top:50%;transform:translateY(-50%);width:${W-ctaW-pad*3.5}px;color:${layers.headline.color};font-size:${layers.headline.size*sc}px;font-family:${layers.headline.font};font-weight:${layers.headline.bold?700:400};line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;`; banner.appendChild(hl);
-        const cta=document.createElement("div"); cta.textContent=layers.cta.text; cta.style.cssText=`position:absolute;right:${pad}px;top:50%;transform:translateY(-50%);background:${layers.cta.bgColor};color:${layers.cta.textColor};font-size:${layers.cta.size*sc}px;font-family:${layers.cta.font};width:${ctaW}px;height:${ctaH}px;border-radius:${layers.cta.radius}px;display:flex;align-items:center;justify-content:center;font-weight:700;white-space:nowrap;`; banner.appendChild(cta);
-      } else {
-        const hl=document.createElement("div"); hl.textContent=layers.headline.text; hl.style.cssText=`position:absolute;left:${layers.headline.x}%;top:${layers.headline.y}%;transform:translate(-50%,-50%);text-align:center;width:85%;color:${layers.headline.color};font-size:${layers.headline.size*sc}px;font-family:${layers.headline.font};font-weight:${layers.headline.bold?700:400};line-height:1.2;word-wrap:break-word;`; banner.appendChild(hl);
-        const bd=document.createElement("div"); bd.textContent=layers.body.text; bd.style.cssText=`position:absolute;left:${layers.body.x}%;top:${layers.body.y}%;transform:translate(-50%,-50%);text-align:center;width:80%;color:${layers.body.color};font-size:${layers.body.size*sc}px;font-family:${layers.body.font};font-weight:${layers.body.bold?700:400};line-height:1.4;word-wrap:break-word;`; banner.appendChild(bd);
-        const ctaW=Math.min(layers.cta.w*sc,W*0.85), ctaH=layers.cta.h*sc;
-        const cta=document.createElement("div"); cta.textContent=layers.cta.text; cta.style.cssText=`position:absolute;left:${layers.cta.x}%;top:${layers.cta.y}%;transform:translate(-50%,-50%);background:${layers.cta.bgColor};color:${layers.cta.textColor};font-size:${layers.cta.size*sc}px;font-family:${layers.cta.font};width:${ctaW}px;height:${ctaH}px;border-radius:${layers.cta.radius}px;display:flex;align-items:center;justify-content:center;font-weight:700;white-space:nowrap;`; banner.appendChild(cta);
-      }
-
-      wrap.appendChild(banner);
-      document.body.appendChild(wrap);
-
-      // ── PNG ──
-      try {
-        const dataUrl = await toPng(banner, { width:fmt.w, height:fmt.h, style:{ transform:`scale(${1/sc})`, transformOrigin:"top left", width:fmt.w+"px", height:fmt.h+"px" } });
-        const base64 = dataUrl.split(",")[1];
-        folder.file(fmtSlug + ".png", base64, { base64: true });
-      } catch(e) { console.warn("PNG failed for", fmt.label, e); }
-
-      // ── HTML5 ──
-      const html = `<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="ad.size" content="width=${fmt.w},height=${fmt.h}"><title>${fmt.label} ${fmt.w}x${fmt.h}</title><style>*{margin:0;padding:0;box-sizing:border-box}body{width:${fmt.w}px;height:${fmt.h}px;overflow:hidden;font-family:sans-serif}#banner{width:${fmt.w}px;height:${fmt.h}px;position:relative;overflow:hidden;background:${layers.bg.color}}#hl{position:absolute;left:${layers.headline.x}%;top:${layers.headline.y}%;transform:translate(-50%,-50%);text-align:center;width:85%;color:${layers.headline.color};font-size:${layers.headline.size}px;font-family:${layers.headline.font};font-weight:${layers.headline.bold?700:400};line-height:1.2;${ac(layers.headline.anim,0.1)}}#bd{position:absolute;left:${layers.body.x}%;top:${layers.body.y}%;transform:translate(-50%,-50%);text-align:center;width:80%;color:${layers.body.color};font-size:${layers.body.size}px;font-family:${layers.body.font};font-weight:${layers.body.bold?700:400};line-height:1.4;${ac(layers.body.anim,0.35)}}#cta{position:absolute;left:${layers.cta.x}%;top:${layers.cta.y}%;transform:translate(-50%,-50%);background:${layers.cta.bgColor};color:${layers.cta.textColor};font-size:${layers.cta.size}px;font-family:${layers.cta.font};width:${layers.cta.w}px;height:${layers.cta.h}px;border-radius:${layers.cta.radius}px;display:flex;align-items:center;justify-content:center;font-weight:700;white-space:nowrap;${ac(layers.cta.anim,0.6)}}@keyframes adsFadeIn{from{opacity:0}to{opacity:1}}@keyframes adsSlideLeft{from{opacity:0;transform:translateX(calc(-50% + 30px))}to{opacity:1;transform:translateX(-50%)}}@keyframes adsSlideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}@keyframes adsZoomIn{from{opacity:0;transform:scale(.8)}to{opacity:1;transform:scale(1)}}@keyframes adsBounce{0%{opacity:0;transform:scale(.6)}60%{transform:scale(1.1)}100%{opacity:1;transform:scale(1)}}</style></head><body><div id="banner">${layers.image.src?`<img src="${layers.image.src}" style="position:absolute;left:${layers.image.x}%;top:${layers.image.y}%;width:${layers.image.w}%;height:${layers.image.h}%;object-fit:cover;opacity:${layers.image.opacity/100}">`:``}${layers.logo.src?`<img src="${layers.logo.src}" style="position:absolute;left:${layers.logo.x}px;top:${layers.logo.y}px;width:${layers.logo.w}px;height:${layers.logo.h}px;object-fit:contain;opacity:${layers.logo.opacity/100}">`:``}${layers.visual.src?`<img src="${layers.visual.src}" style="position:absolute;left:${layers.visual.x}%;top:${layers.visual.y}%;transform:translate(-50%,-50%);width:${layers.visual.w}px;height:${layers.visual.h}px;object-fit:contain;opacity:${layers.visual.opacity/100}">`:``}<div id="hl">${layers.headline.text}</div><div id="bd">${layers.body.text}</div><div id="cta">${layers.cta.text}</div></div></body></html>`;
-      folder.file(fmtSlug + "_HTML5.html", html);
-
-      document.body.removeChild(wrap);
-
-      btn.textContent = `Zipping… ${allFmts.indexOf(fmt)+1}/${allFmts.length}`;
-    }
-
-    const blob = await zip.generateAsync({ type: "blob" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a"); a.href=url; a.download="AdRoq_Display_Builder_Export.zip"; a.click();
-    URL.revokeObjectURL(url);
-
-    btn.textContent = "✓ Downloaded!";
-    setTimeout(() => { btn.textContent = "↓ Export All"; btn.disabled = false; }, 2500);
-
-  } catch(e) {
-    alert("Export All failed: " + e.message);
-    btn.textContent = "↓ Export All"; btn.disabled = false;
-  }
-}
+function slug(fmt){ return`${fmt.label.replace(/ /g,"_")}_${fmt.w}x${fmt.h}`; }
 function dl(href,filename){ const a=document.createElement("a");a.href=href;a.download=filename;a.click(); }
 
 async function exportPNG(){
@@ -470,7 +384,7 @@ function refresh(){ renderPreview(state.mode==="animated"); renderPanel(state.ac
 document.getElementById("btn-png").onclick=exportPNG;
 document.getElementById("btn-html5").onclick=exportHTML5;
 document.getElementById("btn-bulk-upload").onclick=openBulkModal;
-document.getElementById("btn-export-all").onclick = exportAll;=()=>{ state.layers=defaultLayers(state.fmt); delete savedLayers[state.fmt.label]; refresh(); };
+document.getElementById("btn-reset").onclick=()=>{ state.layers=defaultLayers(state.fmt); delete savedLayers[state.fmt.label]; refresh(); };
 document.getElementById("bulk-cancel").onclick=()=>{ document.getElementById("bulk-modal-overlay").classList.remove("open"); bulkFiles=[]; };
 document.getElementById("bulk-apply").onclick=()=>{
   document.querySelectorAll(".bulk-select").forEach(sel=>{ const fmtLabel=sel.value; if(!fmtLabel)return; const idx=Number(sel.dataset.fileIndex); formatImages[fmtLabel]=bulkFiles[idx].src; if(savedLayers[fmtLabel])savedLayers[fmtLabel].image.src=bulkFiles[idx].src; });
