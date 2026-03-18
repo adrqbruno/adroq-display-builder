@@ -17,7 +17,7 @@
     ::-webkit-scrollbar { width: 5px; }
     ::-webkit-scrollbar-track { background: transparent; }
     ::-webkit-scrollbar-thumb { background: #d0cbc4; border-radius: 3px; }
-    #app-header { padding: 12px 14px; border-bottom: 1px solid #e2ddd7; display: flex; align-items: center; gap: 8px; }
+    #app-header { padding: 16px 14px 12px; border-bottom: 1px solid #e2ddd7; display: flex; align-items: center; gap: 8px; }
     #app-logo { width: 28px; height: 28px; background: #111; border-radius: 6px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
     #app-logo svg { width: 14px; height: 14px; fill: #fff; }
     #app-title { font-size: 13px; font-weight: 600; color: #1a1a1a; line-height: 1; }
@@ -82,9 +82,8 @@
 <div id="app">
   <aside id="sidebar-left">
     <div id="app-header">
-      <a href="/" style="display:flex;align-items:center;text-decoration:none;padding:4px 0;">
-        <img src="/AdRoq Squared Logo.png" alt="AdRoq" style="height:80px;width:auto;" />
-      </a>
+      <div id="app-logo"><svg viewBox="0 0 16 16"><rect x="1" y="1" width="6" height="6" rx="1"/><rect x="9" y="1" width="6" height="6" rx="1"/><rect x="1" y="9" width="6" height="6" rx="1"/><rect x="9" y="9" width="6" height="6" rx="1"/></svg></div>
+      <div><div id="app-title">AdRoq</div><div id="app-subtitle">Display Builder</div></div>
     </div>
   </aside>
   <main id="canvas-area">
@@ -198,9 +197,18 @@ const formatImages = {};
 
 function saveCurrent(){ savedLayers[state.fmt.label]=JSON.parse(JSON.stringify(state.layers)); }
 function loadFormat(fmt){
+  // preserve global layers before switching
+  const prevLogo = state.layers.logo;
+  const prevVisual = state.layers.visual;
   saveCurrent(); state.fmt=fmt;
   if(savedLayers[fmt.label]){ state.layers=JSON.parse(JSON.stringify(savedLayers[fmt.label])); }
-  else { state.layers=defaultLayers(fmt); if(formatImages[fmt.label]) state.layers.image.src=formatImages[fmt.label]; }
+  else {
+    state.layers=defaultLayers(fmt);
+    if(formatImages[fmt.label]) state.layers.image.src=formatImages[fmt.label];
+  }
+  // restore global logo and visual across all formats
+  state.layers.logo = JSON.parse(JSON.stringify(prevLogo));
+  state.layers.visual = JSON.parse(JSON.stringify(prevVisual));
 }
 
 // ── Preview ───────────────────────────────────────────────────────────────────
