@@ -249,6 +249,7 @@ function a(name,delay,active){ if(!active||name==="none"||!ANIM_MAP[name])return
 
 // ── Controls ──────────────────────────────────────────────────────────────────
 function clearLayerAllFormats(layerKey, defaultVal) {
+  if(!defaultVal) defaultVal = {};
   const resetVal = JSON.parse(JSON.stringify(defaultVal));
   Object.keys(savedLayers).forEach(fmt => {
     savedLayers[fmt][layerKey] = JSON.parse(JSON.stringify(resetVal));
@@ -270,7 +271,7 @@ function clearBtn(layerKey, label, defaultVal) {
   wrap.appendChild(btn);
   return wrap;
 }
-function el(tag,attrs={},...children){ const e=document.createElement(tag); Object.entries(attrs).forEach(([k,v])=>{ if(k==="class")e.className=v; else if(k==="style")e.style.cssText=v; else e.setAttribute(k,v); }); children.forEach(c=>c&&e.appendChild(typeof c==="string"?document.createTextNode(c):c)); return e; }
+function el(tag,attrs,...children){ if(!attrs) attrs={}; const e=document.createElement(tag); Object.entries(attrs).forEach(([k,v])=>{ if(k==="class")e.className=v; else if(k==="style")e.style.cssText=v; else e.setAttribute(k,v); }); children.forEach(c=>c&&e.appendChild(typeof c==="string"?document.createTextNode(c):c)); return e; }
 function lbl(t){ return el("div",{class:"ctrl-label"},t); }
 function row(...cols){ const r=el("div",{class:"ctrl-row"}); cols.forEach(c=>{const w=el("div",{class:"ctrl-col"});w.appendChild(c);r.appendChild(w);}); return r; }
 function section(title,...children){ const w=el("div",{class:"ctrl-section"}); w.appendChild(el("div",{class:"ctrl-section-title"},title)); children.forEach(c=>c&&w.appendChild(c)); return w; }
