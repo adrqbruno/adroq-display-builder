@@ -235,12 +235,18 @@ var formatImages = {};
 
 function saveCurrent(){ savedLayers[state.fmt.label]=JSON.parse(JSON.stringify(state.layers)); }
 function loadFormat(fmt){
-  var prevLogo=state.layers.logo, prevVisual=state.layers.visual;
+  var prevLogo=state.layers.logo, prevVisual=state.layers.visual, prevCta=state.layers.cta;
   saveCurrent(); state.fmt=fmt;
   if(savedLayers[fmt.label]){ state.layers=JSON.parse(JSON.stringify(savedLayers[fmt.label])); }
   else { state.layers=defaultLayers(fmt); if(formatImages[fmt.label]) state.layers.image.src=formatImages[fmt.label]; }
   state.layers.logo=JSON.parse(JSON.stringify(prevLogo));
   state.layers.visual=JSON.parse(JSON.stringify(prevVisual));
+  // preserve CTA text, colors and font — but keep per-format sizing and position
+  state.layers.cta.text=prevCta.text;
+  state.layers.cta.bgColor=prevCta.bgColor;
+  state.layers.cta.textColor=prevCta.textColor;
+  state.layers.cta.font=prevCta.font;
+  state.layers.cta.anim=prevCta.anim;
 }
 
 // ── Banner builder (shared by preview + main canvas) ─────────────────────────
