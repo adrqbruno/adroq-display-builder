@@ -358,9 +358,20 @@ function openPreviewAll(){
 function upd(layer,key,val){ state.layers[layer][key]=val; renderPreview(state.mode==="animated"); }
 
 function clearLayerAllFormats(layerKey,resetVal){
+  // 1. Update all already-visited formats in savedLayers
   var keys=Object.keys(savedLayers);
   for(var i=0;i<keys.length;i++) savedLayers[keys[i]][layerKey]=JSON.parse(JSON.stringify(resetVal));
-  state.layers[layerKey]=JSON.parse(JSON.stringify(resetVal)); refresh();
+  // 2. Update current live state
+  state.layers[layerKey]=JSON.parse(JSON.stringify(resetVal));
+  // 3. Pre-save a cleared default for every format not yet visited
+  for(var j=0;j<FORMATS.length;j++){
+    var f=FORMATS[j];
+    if(!savedLayers[f.label]){
+      savedLayers[f.label]=defaultLayers(f);
+      savedLayers[f.label][layerKey]=JSON.parse(JSON.stringify(resetVal));
+    }
+  }
+  refresh();
 }
 function makeClearBtn(layerKey,layerLabel,resetVal){
   var wrap=document.createElement("div"); wrap.className="clear-btn-wrap";
