@@ -234,9 +234,13 @@ function saveCurrent(){ savedLayers[state.fmt.label]=JSON.parse(JSON.stringify(s
 function loadFormat(fmt){
   var prevLogo=state.layers.logo, prevVisual=state.layers.visual, prevCta=state.layers.cta;
   saveCurrent(); state.fmt=fmt;
-  if(savedLayers[fmt.label]){ state.layers=JSON.parse(JSON.stringify(savedLayers[fmt.label])); }
-  else { state.layers=defaultLayers(fmt); if(formatImages[fmt.label]) state.layers.image.src=formatImages[fmt.label]; }
-  // global: logo, visual, CTA text/colors/font/anim
+  if(savedLayers[fmt.label]){
+    state.layers=JSON.parse(JSON.stringify(savedLayers[fmt.label]));
+  } else {
+    state.layers=defaultLayers(fmt);
+    if(formatImages[fmt.label]) state.layers.image.src=formatImages[fmt.label];
+  }
+  // global layers — always override from previous format
   state.layers.logo   = JSON.parse(JSON.stringify(prevLogo));
   state.layers.visual = JSON.parse(JSON.stringify(prevVisual));
   state.layers.cta.text      = prevCta.text;
@@ -244,6 +248,8 @@ function loadFormat(fmt){
   state.layers.cta.textColor = prevCta.textColor;
   state.layers.cta.font      = prevCta.font;
   state.layers.cta.anim      = prevCta.anim;
+  // sync logo+visual into savedLayers so they persist
+  savedLayers[fmt.label] = JSON.parse(JSON.stringify(state.layers));
 }
 
 // ── Banner builder (shared by preview + export) ───────────────────────────────
