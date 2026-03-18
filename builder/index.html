@@ -316,7 +316,14 @@ function renderBulkRows(){
     const blank=document.createElement("option"); blank.value=""; blank.textContent="— select format —"; sel.appendChild(blank);
     FORMATS.forEach(fmt=>{ const opt=document.createElement("option"); opt.value=fmt.label; opt.textContent=`${fmt.label} (${fmt.w}×${fmt.h})`; sel.appendChild(opt); });
     const lower=file.name.toLowerCase();
-    FORMATS.forEach(fmt=>{ const key=fmt.label.toLowerCase().replace(/ /g,"_"); if(lower.includes(key)||lower.includes(fmt.w+"x"+fmt.h)) sel.value=fmt.label; });
+    FORMATS.forEach(fmt=>{
+      const key=fmt.label.toLowerCase().replace(/ /g,"_");
+      const sizeX=fmt.w+"x"+fmt.h;
+      const sizeMul=fmt.w+"×"+fmt.h;
+      const sizeXpx=fmt.w+"x"+fmt.h+"px";
+      const sizeMulpx=fmt.w+"×"+fmt.h+"px";
+      if(lower.includes(key)||lower.includes(sizeX)||lower.includes(sizeMul)||lower.includes(sizeXpx)||lower.includes(sizeMulpx)) sel.value=fmt.label;
+    });
     row.appendChild(thumb); row.appendChild(name); row.appendChild(sel); container.appendChild(row);
   });
 }
