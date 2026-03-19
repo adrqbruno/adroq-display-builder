@@ -252,17 +252,39 @@ var formatImages= {};
 
 function saveCurrent(){ savedLayers[state.fmt.label]=JSON.parse(JSON.stringify(state.layers)); }
 function loadFormat(fmt){
-  var prevLogo=state.layers.logo, prevVisual=state.layers.visual, prevCta=state.layers.cta;
-  saveCurrent(); state.fmt=fmt;
-  if(savedLayers[fmt.label]){ state.layers=JSON.parse(JSON.stringify(savedLayers[fmt.label])); }
-  else { state.layers=defaultLayers(fmt); if(formatImages[fmt.label]) state.layers.image.src=formatImages[fmt.label]; }
-  state.layers.logo   = JSON.parse(JSON.stringify(prevLogo));
-  state.layers.visual = JSON.parse(JSON.stringify(prevVisual));
-  state.layers.cta.text      = prevCta.text;
-  state.layers.cta.bgColor   = prevCta.bgColor;
-  state.layers.cta.textColor = prevCta.textColor;
-  state.layers.cta.font      = prevCta.font;
-  state.layers.cta.anim      = prevCta.anim;
+  // Save current edits first
+  saveCurrent();
+
+  // Capture globals from current state AFTER saving
+  var prevLogo   = JSON.parse(JSON.stringify(state.layers.logo));
+  var prevVisual = JSON.parse(JSON.stringify(state.layers.visual));
+  var prevCtaText      = state.layers.cta.text;
+  var prevCtaBgColor   = state.layers.cta.bgColor;
+  var prevCtaTextColor = state.layers.cta.textColor;
+  var prevCtaFont      = state.layers.cta.font;
+  var prevCtaAnim      = state.layers.cta.anim;
+
+  state.fmt = fmt;
+
+  if(savedLayers[fmt.label]){
+    // Restore previously saved edits — user's manual tweaks intact
+    state.layers = JSON.parse(JSON.stringify(savedLayers[fmt.label]));
+  } else {
+    // First visit — load defaults with preset CTA sizing
+    state.layers = defaultLayers(fmt);
+    if(formatImages[fmt.label]) state.layers.image.src = formatImages[fmt.label];
+  }
+
+  // Apply globals (never overwrite per-format sizing/position)
+  state.layers.logo   = prevLogo;
+  state.layers.visual = prevVisual;
+  state.layers.cta.text      = prevCtaText;
+  state.layers.cta.bgColor   = prevCtaBgColor;
+  state.layers.cta.textColor = prevCtaTextColor;
+  state.layers.cta.font      = prevCtaFont;
+  state.layers.cta.anim      = prevCtaAnim;
+
+  // Save the merged result
   savedLayers[fmt.label] = JSON.parse(JSON.stringify(state.layers));
 }
 
