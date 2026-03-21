@@ -284,7 +284,17 @@ function buildBanner(fmt, layers, sc, animating){
   var b=document.createElement("div");
   b.style.cssText="width:"+W+"px;height:"+H+"px;position:relative;overflow:hidden;background:"+layers.bg.color+";border-radius:3px;";
   if(layers.image.src){var i=document.createElement("img");i.src=layers.image.src;i.style.cssText="position:absolute;left:"+layers.image.x+"%;top:"+layers.image.y+"%;width:"+layers.image.w+"%;height:"+layers.image.h+"%;object-fit:cover;opacity:"+layers.image.opacity/100+";";b.appendChild(i);}
-  if(layers.logo.src){var i2=document.createElement("img");i2.src=layers.logo.src;i2.style.cssText="position:absolute;left:"+(layers.logo.x*sc)+"px;top:"+(layers.logo.y*sc)+"px;width:"+(layers.logo.w*sc)+"px;height:"+(layers.logo.h*sc)+"px;object-fit:contain;opacity:"+layers.logo.opacity/100+";";b.appendChild(i2);}
+  if(layers.logo.src){
+    var i2=document.createElement("img"); i2.src=layers.logo.src;
+    // For large formats (native), keep logo at a visible % of banner width
+    var isLarge = fmt.w >= 1080;
+    var logoW = isLarge ? layers.logo.w : layers.logo.w*sc;
+    var logoH = isLarge ? layers.logo.h : layers.logo.h*sc;
+    var logoX = isLarge ? layers.logo.x : layers.logo.x*sc;
+    var logoY = isLarge ? layers.logo.y : layers.logo.y*sc;
+    i2.style.cssText="position:absolute;left:"+logoX+"px;top:"+logoY+"px;width:"+logoW+"px;height:"+logoH+"px;object-fit:contain;opacity:"+layers.logo.opacity/100+";";
+    b.appendChild(i2);
+  }
   if(layers.visual.src){var i3=document.createElement("img");i3.src=layers.visual.src;i3.style.cssText="position:absolute;left:"+layers.visual.x+"%;top:"+layers.visual.y+"%;transform:translate(-50%,-50%);width:"+(layers.visual.w*sc)+"px;height:"+(layers.visual.h*sc)+"px;object-fit:contain;opacity:"+layers.visual.opacity/100+";";b.appendChild(i3);}
   if(thin){
     var pad=Math.round(H*0.15), cW=Math.min(layers.cta.w*sc,W*0.38), cH=Math.min(layers.cta.h*sc,H*0.72);
